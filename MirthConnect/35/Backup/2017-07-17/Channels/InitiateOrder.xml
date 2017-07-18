@@ -1,0 +1,3527 @@
+<channel version="3.4.2">
+  <id>f24a2bfd-8f45-4170-b6d6-6410f426ec66</id>
+  <nextMetaDataId>3</nextMetaDataId>
+  <name>InitiateOrder</name>
+  <description>Creates required bundle for ordering from minimal JSON:
+
+{
+	 &quot;PatientID&quot;: &quot;SAFE.11111111&quot;,
+	 &quot;LabToken&quot;: &quot;Quest&quot;,
+	 &quot;LabFacility&quot;:&quot;STL&quot;,
+	 &quot;SafeOrderID&quot;: 1,
+	 &quot;BillType&quot;:&quot;P&quot;,
+	 &quot;OrderingProviderFirstName&quot;:&quot;John&quot;,
+	 &quot;OrderingProviderMiddleName&quot;:&quot;Q.&quot;,
+	 &quot;OrderingProviderLastName&quot;:&quot;Sawbones&quot;,
+	 &quot;OrderingPrividerNPI&quot;:&quot;1111111111&quot;,
+	 &quot;GuarantorFirstName&quot;:&quot;x&quot;,
+	 &quot;GuarantorMiddleName&quot;:&quot;y&quot;,
+	 &quot;GuarantorLastName&quot;:&quot;z&quot;,
+	 &quot;GuarantorAddress&quot;:&quot;111 Lane Ln&quot;,
+	 &quot;GuarantorCity&quot;:&quot;Nowhere&quot;,
+	 &quot;GuarantorState&quot;:&quot;MT&quot;,
+	 &quot;GuarantorZip&quot;:&quot;00000-0000&quot;,
+	 &quot;GuarantorPhone&quot;:&quot;0000000000&quot;,
+	 &quot;InsuranceCode&quot;:&quot;AUHSC&quot;,
+	 &quot;PlanCode&quot;:&quot;111111&quot;,
+	 &quot;PolicyNumber&quot;:&quot;11111111-11&quot;,
+	 &quot;IncludedTests&quot;: [
+		&quot;HEPC&quot;,
+		&quot;AIDS1&quot;,
+		&quot;AIDS2&quot;
+	]
+}</description>
+  <enabled>true</enabled>
+  <lastModified>
+    <time>1495038226838</time>
+    <timezone>America/New_York</timezone>
+  </lastModified>
+  <revision>105</revision>
+  <sourceConnector version="3.4.2">
+    <metaDataId>0</metaDataId>
+    <name>sourceConnector</name>
+    <properties class="com.mirth.connect.connectors.http.HttpReceiverProperties" version="3.4.2">
+      <pluginProperties>
+        <com.mirth.connect.plugins.httpauth.NoneHttpAuthProperties version="3.4.2">
+  <authType>NONE</authType>
+        </com.mirth.connect.plugins.httpauth.NoneHttpAuthProperties>
+      </pluginProperties>
+      <listenerConnectorProperties version="3.4.2">
+        <host>0.0.0.0</host>
+        <port>8013</port>
+      </listenerConnectorProperties>
+      <sourceConnectorProperties version="3.4.2">
+        <responseVariable>None</responseVariable>
+        <respondAfterProcessing>true</respondAfterProcessing>
+        <processBatch>false</processBatch>
+        <firstResponse>false</firstResponse>
+        <processingThreads>1</processingThreads>
+        <resourceIds class="linked-hash-map">
+          <entry>
+            <string>Default Resource</string>
+            <string>[Default Resource]</string>
+          </entry>
+          <entry>
+            <string>29f52768-5925-40e8-b62d-a265b40e6ab4</string>
+            <string>hapi-fhir</string>
+          </entry>
+        </resourceIds>
+        <queueBufferSize>1000</queueBufferSize>
+      </sourceConnectorProperties>
+      <xmlBody>false</xmlBody>
+      <parseMultipart>true</parseMultipart>
+      <includeMetadata>false</includeMetadata>
+      <binaryMimeTypes>application/.*(?&lt;!json|xml)$|image/.*|video/.*|audio/.*</binaryMimeTypes>
+      <binaryMimeTypesRegex>true</binaryMimeTypesRegex>
+      <responseContentType>text/plain</responseContentType>
+      <responseDataTypeBinary>false</responseDataTypeBinary>
+      <responseStatusCode></responseStatusCode>
+      <responseHeaders class="linked-hash-map"/>
+      <charset>UTF-8</charset>
+      <contextPath>InitiateOrder</contextPath>
+      <timeout>0</timeout>
+      <staticResources/>
+    </properties>
+    <transformer version="3.4.2">
+      <steps>
+        <step>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Setup</name>
+          <script>channelMap.put(&apos;LabToken&apos;, msg[&apos;LabToken&apos;] );
+
+logger.error( &quot;PlacerOrderNumber: &quot; + msg[&apos;PlacerOrderNumberOverride&apos;] );
+
+if( msg[&apos;PlacerOrderNumberOverride&apos;] != &quot;&quot; )
+{
+	channelMap.put(&apos;PlacerOrderNumber&apos;, msg[&apos;PlacerOrderNumberOverride&apos;] );	
+}
+else
+{
+	channelMap.put(&apos;PlacerOrderNumber&apos;, connectorMessage.getMessageId() );
+}</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>channelMap.put(&apos;LabToken&apos;, msg[&apos;LabToken&apos;] );
+
+logger.error( &quot;PlacerOrderNumber: &quot; + msg[&apos;PlacerOrderNumberOverride&apos;] );
+
+if( msg[&apos;PlacerOrderNumberOverride&apos;] != &quot;&quot; )
+{
+	channelMap.put(&apos;PlacerOrderNumber&apos;, msg[&apos;PlacerOrderNumberOverride&apos;] );	
+}
+else
+{
+	channelMap.put(&apos;PlacerOrderNumber&apos;, connectorMessage.getMessageId() );
+}</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>1</sequenceNumber>
+          <name>Define MessageHeader</name>
+          <script>var MessageHeader =
+{
+	 &apos;resource&apos;: {
+		 &apos;MessageHeader&apos;: {
+			 &apos;destination&apos;: {
+				 &apos;endpoint&apos;: {
+					 &apos;value&apos;: &apos;MET&apos;
+				},
+				 &apos;name&apos;: {
+					 &apos;value&apos;: &apos;PSC&apos;
+				}
+			},
+			 &apos;id&apos;: {
+				 &apos;value&apos;: &apos;MSH-message-header&apos;
+			},
+			 &apos;source&apos;: {
+				 &apos;endpoint&apos;: {
+					 &apos;value&apos;: &apos;90046003&apos;
+				},
+				 &apos;name&apos;: {
+					 &apos;value&apos;: &apos;SAFE&apos;
+				}
+			},
+			 &apos;event&apos;: {
+				 &apos;code&apos;: {
+					 &apos;value&apos;: &apos;submit-order&apos;
+				}
+			},
+			 &apos;timestamp&apos;: {
+				 &apos;value&apos;: &apos;2017-03-13T12:31:32.122-07:00&apos;
+			}
+		}
+	}
+};
+
+MessageHeader.resource.MessageHeader.destination.endpoint.value = msg[&apos;LabFacility&apos;];
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( MessageHeader );</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>var MessageHeader =
+{
+	 &apos;resource&apos;: {
+		 &apos;MessageHeader&apos;: {
+			 &apos;destination&apos;: {
+				 &apos;endpoint&apos;: {
+					 &apos;value&apos;: &apos;MET&apos;
+				},
+				 &apos;name&apos;: {
+					 &apos;value&apos;: &apos;PSC&apos;
+				}
+			},
+			 &apos;id&apos;: {
+				 &apos;value&apos;: &apos;MSH-message-header&apos;
+			},
+			 &apos;source&apos;: {
+				 &apos;endpoint&apos;: {
+					 &apos;value&apos;: &apos;90046003&apos;
+				},
+				 &apos;name&apos;: {
+					 &apos;value&apos;: &apos;SAFE&apos;
+				}
+			},
+			 &apos;event&apos;: {
+				 &apos;code&apos;: {
+					 &apos;value&apos;: &apos;submit-order&apos;
+				}
+			},
+			 &apos;timestamp&apos;: {
+				 &apos;value&apos;: &apos;2017-03-13T12:31:32.122-07:00&apos;
+			}
+		}
+	}
+};
+
+MessageHeader.resource.MessageHeader.destination.endpoint.value = msg[&apos;LabFacility&apos;];
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( MessageHeader );</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>2</sequenceNumber>
+          <name>Query for Patient</name>
+          <script>importPackage(Packages.ca.uhn.fhir.context);
+importPackage(Packages.ca.uhn.fhir.model.dstu2.resource);
+importPackage(Packages.ca.uhn.fhir.rest.api);
+importPackage(Packages.ca.uhn.fhir.rest.client);
+
+var Url = configurationMap.get(&apos;sparkRawURL&apos;);
+
+var ctx = Packages.ca.uhn.fhir.context.FhirContext.forDstu2();
+var client = ctx.newRestfulGenericClient( Url );
+		
+ctx.getRestfulClientFactory().setSocketTimeout(60 * 1000); 
+ctx.getRestfulClientFactory().setConnectTimeout(60 * 1000); 
+channelMap.put( &quot;ctx&quot;, ctx );
+
+var patientSearchResults = client
+	.search()
+	.forResource(Patient)
+	.where(Packages.ca.uhn.fhir.model.dstu2.resource.Patient.IDENTIFIER.exactly().identifier( msg[&apos;PatientID&apos;]) )
+	.returnBundle(Bundle)
+	.execute();
+
+var ms = patientSearchResults.getEntry();
+
+var msSize = ms.size();
+
+var patientResource;
+var patientString;
+
+if( msSize )
+{
+	var patientResource = ms.get(0).getResource();
+	var patientString = ctx.newJsonParser().encodeResourceToString(patientResource);
+	
+//	logger.error( &quot;Patient: \n&quot; + patientResource.getIdentifier().get(0).getValue() );
+//	logger.error( &quot;Patient: \n&quot; + patientString );	
+}
+else
+{
+	throw &quot;Initiate Order: Patient Not Found&quot;;
+}
+
+var PatientTarget =
+       {
+        &quot;resource&quot; : {
+          &quot;Patient&quot; : {
+            &quot;identifier&quot; : [
+              {
+                &quot;use&quot; : {
+                  &quot;value&quot; : &quot;secondary&quot;
+                },
+                &quot;value&quot; : {
+                  &quot;value&quot; : 20526619
+                }
+              },
+              {
+                &quot;use&quot; : {
+                  &quot;value&quot; : &quot;official&quot;
+                },
+                &quot;value&quot; : {
+                  &quot;value&quot; : 20526619
+                }
+              }
+            ],
+            &quot;address&quot; : {
+              &quot;country&quot; : {
+                &quot;value&quot; : &quot;USA&quot;
+              },
+              &quot;city&quot; : {
+                &quot;value&quot; : &quot;scottsdale&quot;
+              },
+              &quot;line&quot; : {
+                &quot;value&quot; : &quot;123 my street&quot;
+              },
+			&quot;postalCode&quot;: {
+				 &quot;value&quot;: 85257
+			},              
+              &quot;state&quot; : {
+                &quot;value&quot; : &quot;AZ&quot;
+              }
+            },
+            &quot;gender&quot; : {
+              &quot;value&quot; : &quot;male&quot;
+            },
+            
+            &quot;name&quot; : {
+              &quot;family&quot; : {
+              	&quot;value&quot;: &quot;Mace&quot;
+              },
+              &quot;given&quot; : {
+              	&quot;value&quot;:&quot;Andrew&quot;
+              	}
+              },
+            &quot;telecom&quot; : {
+              &quot;system&quot; : {
+                &quot;value&quot; : &quot;phone&quot;
+              },
+              &quot;use&quot; : {
+                &quot;value&quot; : &quot;home&quot;
+              },
+              &quot;value&quot; : {
+                &quot;value&quot; : 1234567890
+              }
+            },
+            &quot;id&quot; : {
+              &quot;value&quot; : &quot;PID-patient-identification&quot;
+            },
+            &quot;birthDate&quot; : {
+              &quot;value&quot; : &quot;1988-01-01&quot;
+            }
+          }
+        }
+      }      ;
+
+
+var PatientSource = JSON.parse( patientString );
+
+PatientTarget.resource.Patient.identifier[0].value.value = PatientSource.identifier[0].value;
+PatientTarget.resource.Patient.identifier[0].use.value = &quot;secondary&quot;;
+
+PatientTarget.resource.Patient.identifier[1].value.value = PatientSource.identifier[1].value;
+PatientTarget.resource.Patient.identifier[1].use.value = &quot;official&quot;;
+
+PatientTarget.resource.Patient.name.family.value = PatientSource.name[0].family[0];
+PatientTarget.resource.Patient.name.given.value =  PatientSource.name[0].given[0];
+
+PatientTarget.resource.Patient.telecom.value.value = PatientSource.telecom[0].value;
+PatientTarget.resource.Patient.gender.value = PatientSource.gender;
+PatientTarget.resource.Patient.birthDate.value = PatientSource.birthDate;
+
+PatientTarget.resource.Patient.address.line.value = PatientSource.address[0].line[0];
+PatientTarget.resource.Patient.address.city.value = PatientSource.address[0].city;
+PatientTarget.resource.Patient.address.state.value = PatientSource.address[0].state;
+PatientTarget.resource.Patient.address.postalCode.value = PatientSource.address[0].postalCode;
+PatientTarget.resource.Patient.id = PatientSource.id;
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( PatientTarget );</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>importPackage(Packages.ca.uhn.fhir.context);
+importPackage(Packages.ca.uhn.fhir.model.dstu2.resource);
+importPackage(Packages.ca.uhn.fhir.rest.api);
+importPackage(Packages.ca.uhn.fhir.rest.client);
+
+var Url = configurationMap.get(&apos;sparkRawURL&apos;);
+
+var ctx = Packages.ca.uhn.fhir.context.FhirContext.forDstu2();
+var client = ctx.newRestfulGenericClient( Url );
+		
+ctx.getRestfulClientFactory().setSocketTimeout(60 * 1000); 
+ctx.getRestfulClientFactory().setConnectTimeout(60 * 1000); 
+channelMap.put( &quot;ctx&quot;, ctx );
+
+var patientSearchResults = client
+	.search()
+	.forResource(Patient)
+	.where(Packages.ca.uhn.fhir.model.dstu2.resource.Patient.IDENTIFIER.exactly().identifier( msg[&apos;PatientID&apos;]) )
+	.returnBundle(Bundle)
+	.execute();
+
+var ms = patientSearchResults.getEntry();
+
+var msSize = ms.size();
+
+var patientResource;
+var patientString;
+
+if( msSize )
+{
+	var patientResource = ms.get(0).getResource();
+	var patientString = ctx.newJsonParser().encodeResourceToString(patientResource);
+	
+//	logger.error( &quot;Patient: \n&quot; + patientResource.getIdentifier().get(0).getValue() );
+//	logger.error( &quot;Patient: \n&quot; + patientString );	
+}
+else
+{
+	throw &quot;Initiate Order: Patient Not Found&quot;;
+}
+
+var PatientTarget =
+       {
+        &quot;resource&quot; : {
+          &quot;Patient&quot; : {
+            &quot;identifier&quot; : [
+              {
+                &quot;use&quot; : {
+                  &quot;value&quot; : &quot;secondary&quot;
+                },
+                &quot;value&quot; : {
+                  &quot;value&quot; : 20526619
+                }
+              },
+              {
+                &quot;use&quot; : {
+                  &quot;value&quot; : &quot;official&quot;
+                },
+                &quot;value&quot; : {
+                  &quot;value&quot; : 20526619
+                }
+              }
+            ],
+            &quot;address&quot; : {
+              &quot;country&quot; : {
+                &quot;value&quot; : &quot;USA&quot;
+              },
+              &quot;city&quot; : {
+                &quot;value&quot; : &quot;scottsdale&quot;
+              },
+              &quot;line&quot; : {
+                &quot;value&quot; : &quot;123 my street&quot;
+              },
+			&quot;postalCode&quot;: {
+				 &quot;value&quot;: 85257
+			},              
+              &quot;state&quot; : {
+                &quot;value&quot; : &quot;AZ&quot;
+              }
+            },
+            &quot;gender&quot; : {
+              &quot;value&quot; : &quot;male&quot;
+            },
+            
+            &quot;name&quot; : {
+              &quot;family&quot; : {
+              	&quot;value&quot;: &quot;Mace&quot;
+              },
+              &quot;given&quot; : {
+              	&quot;value&quot;:&quot;Andrew&quot;
+              	}
+              },
+            &quot;telecom&quot; : {
+              &quot;system&quot; : {
+                &quot;value&quot; : &quot;phone&quot;
+              },
+              &quot;use&quot; : {
+                &quot;value&quot; : &quot;home&quot;
+              },
+              &quot;value&quot; : {
+                &quot;value&quot; : 1234567890
+              }
+            },
+            &quot;id&quot; : {
+              &quot;value&quot; : &quot;PID-patient-identification&quot;
+            },
+            &quot;birthDate&quot; : {
+              &quot;value&quot; : &quot;1988-01-01&quot;
+            }
+          }
+        }
+      }      ;
+
+
+var PatientSource = JSON.parse( patientString );
+
+PatientTarget.resource.Patient.identifier[0].value.value = PatientSource.identifier[0].value;
+PatientTarget.resource.Patient.identifier[0].use.value = &quot;secondary&quot;;
+
+PatientTarget.resource.Patient.identifier[1].value.value = PatientSource.identifier[1].value;
+PatientTarget.resource.Patient.identifier[1].use.value = &quot;official&quot;;
+
+PatientTarget.resource.Patient.name.family.value = PatientSource.name[0].family[0];
+PatientTarget.resource.Patient.name.given.value =  PatientSource.name[0].given[0];
+
+PatientTarget.resource.Patient.telecom.value.value = PatientSource.telecom[0].value;
+PatientTarget.resource.Patient.gender.value = PatientSource.gender;
+PatientTarget.resource.Patient.birthDate.value = PatientSource.birthDate;
+
+PatientTarget.resource.Patient.address.line.value = PatientSource.address[0].line[0];
+PatientTarget.resource.Patient.address.city.value = PatientSource.address[0].city;
+PatientTarget.resource.Patient.address.state.value = PatientSource.address[0].state;
+PatientTarget.resource.Patient.address.postalCode.value = PatientSource.address[0].postalCode;
+PatientTarget.resource.Patient.id = PatientSource.id;
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( PatientTarget );</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>3</sequenceNumber>
+          <name>Define Coverage</name>
+          <script>var Coverage = 
+{
+	 &quot;resource&quot;: {
+		 &quot;Coverage&quot;: {
+			 &quot;identifier&quot;: {
+				 &quot;value&quot;: {
+					 &quot;value&quot;: &quot;PlanID1234&quot;
+				}
+			},
+			 &quot;contained&quot;: {
+				 &quot;Organization&quot;: {
+					 &quot;identifier&quot;: {
+						 &quot;value&quot;: {
+							 &quot;value&quot;: &quot;N&quot;
+						}
+					},
+					 &quot;id&quot;: {
+						 &quot;value&quot;: &quot;IN1-insurance-1&quot;
+					}
+				}
+			},
+			 &quot;subscriber&quot;: {
+				 &quot;reference&quot;: {
+					 &quot;value&quot;: &quot;Patient/PID1&quot;
+				}
+			},
+			 &quot;id&quot;: {
+				 &quot;value&quot;: &quot;IN1-insurance-1&quot;
+			},
+			 &quot;type&quot;: {
+				 &quot;code&quot;: {
+					 &quot;value&quot;: &quot;C&quot;
+				}
+			},
+			 &quot;plan&quot;: {
+				 &quot;value&quot;: &quot;Patient/PID1&quot;
+			}
+		}
+	}
+};
+
+
+Coverage.resource.Coverage.identifier.value.value = msg[&apos;InsuranceCode&apos;];
+Coverage.resource.Coverage.plan.value = msg[&apos;PlanCode&apos;];
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( Coverage );</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>var Coverage = 
+{
+	 &quot;resource&quot;: {
+		 &quot;Coverage&quot;: {
+			 &quot;identifier&quot;: {
+				 &quot;value&quot;: {
+					 &quot;value&quot;: &quot;PlanID1234&quot;
+				}
+			},
+			 &quot;contained&quot;: {
+				 &quot;Organization&quot;: {
+					 &quot;identifier&quot;: {
+						 &quot;value&quot;: {
+							 &quot;value&quot;: &quot;N&quot;
+						}
+					},
+					 &quot;id&quot;: {
+						 &quot;value&quot;: &quot;IN1-insurance-1&quot;
+					}
+				}
+			},
+			 &quot;subscriber&quot;: {
+				 &quot;reference&quot;: {
+					 &quot;value&quot;: &quot;Patient/PID1&quot;
+				}
+			},
+			 &quot;id&quot;: {
+				 &quot;value&quot;: &quot;IN1-insurance-1&quot;
+			},
+			 &quot;type&quot;: {
+				 &quot;code&quot;: {
+					 &quot;value&quot;: &quot;C&quot;
+				}
+			},
+			 &quot;plan&quot;: {
+				 &quot;value&quot;: &quot;Patient/PID1&quot;
+			}
+		}
+	}
+};
+
+
+Coverage.resource.Coverage.identifier.value.value = msg[&apos;InsuranceCode&apos;];
+Coverage.resource.Coverage.plan.value = msg[&apos;PlanCode&apos;];
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( Coverage );</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>4</sequenceNumber>
+          <name>Define Practitioner / Ordering Provider</name>
+          <script>var Practitioner = 
+{
+	 &quot;resource&quot;: {
+		 &quot;Practitioner&quot;: {
+			 &quot;identifier&quot;: {
+				 &quot;assigner&quot;: {
+					 &quot;display&quot;: {
+						 &quot;value&quot;: &quot;NPI&quot;
+					}
+				},
+				 &quot;value&quot;: {
+					 &quot;value&quot;: &quot;NPI_ID12345&quot;
+				}
+			},
+			 &quot;name&quot;: {
+				 &quot;given&quot;: {
+					 &quot;value&quot;: &quot;Jason&quot;
+				},
+				 &quot;family&quot;: {
+					 &quot;value&quot;: &quot;Javillo&quot;
+				}
+			},
+			 &quot;id&quot;: {
+				 &quot;value&quot;: &quot;ordering-provider-1&quot;
+			}
+		}
+	}
+};
+
+Practitioner.resource.Practitioner.identifier.value.value = msg[&apos;OrderingProviderNPI&apos;];
+Practitioner.resource.Practitioner.name.family.value = msg[&apos;OrderingProviderLastName&apos;];
+Practitioner.resource.Practitioner.name.given.value  = msg[&apos;OrderingProviderFirstName&apos;];
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( Practitioner );</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>var Practitioner = 
+{
+	 &quot;resource&quot;: {
+		 &quot;Practitioner&quot;: {
+			 &quot;identifier&quot;: {
+				 &quot;assigner&quot;: {
+					 &quot;display&quot;: {
+						 &quot;value&quot;: &quot;NPI&quot;
+					}
+				},
+				 &quot;value&quot;: {
+					 &quot;value&quot;: &quot;NPI_ID12345&quot;
+				}
+			},
+			 &quot;name&quot;: {
+				 &quot;given&quot;: {
+					 &quot;value&quot;: &quot;Jason&quot;
+				},
+				 &quot;family&quot;: {
+					 &quot;value&quot;: &quot;Javillo&quot;
+				}
+			},
+			 &quot;id&quot;: {
+				 &quot;value&quot;: &quot;ordering-provider-1&quot;
+			}
+		}
+	}
+};
+
+Practitioner.resource.Practitioner.identifier.value.value = msg[&apos;OrderingProviderNPI&apos;];
+Practitioner.resource.Practitioner.name.family.value = msg[&apos;OrderingProviderLastName&apos;];
+Practitioner.resource.Practitioner.name.given.value  = msg[&apos;OrderingProviderFirstName&apos;];
+
+tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( Practitioner );</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>5</sequenceNumber>
+          <name>Add Static Test Set</name>
+          <script>var Panel = 
+[
+	{ &apos;code&apos;: &apos;91431&apos;, &apos;display&apos;: &apos;HIV 1/2 ANTIGEN/ANTIBODY,FOURTH GENERATION W/RFL&apos; },
+	{ &apos;code&apos;: &apos;8472&apos;, &apos;display&apos;: &apos;HEPATITIS C AB W/REFL TO HCV RNA, QN, PCR^SERUM&apos; },
+	{ &apos;code&apos;: &apos;498&apos;, &apos;display&apos;: &apos;HEPATITIS B SURFACE ANTIGEN W/REFL CONFIRM&apos; },
+	{ &apos;code&apos;: &apos;3640&apos;, &apos;display&apos;: &apos;HSV 2 IGG, TYPE SPECIFIC AB&apos; },
+	{ &apos;code&apos;: &apos;799&apos;, &apos;display&apos;: &apos;RPR (MONITOR) W/REFL TITER&apos; }, /*Syphylis*/
+	{ &apos;code&apos;: &apos;11362&apos;, &apos;display&apos;: &apos;NEISSERIA GONORRHOEAE RNA, TMA&apos; },
+	{ &apos;code&apos;: &apos;11363&apos;, &apos;display&apos;: &apos;CHLAMYDIA/N. GONORRHOEAE RNA, TMA&apos; }		
+]
+;
+
+
+var index = 1;
+
+for each( item in Panel )
+{
+
+var order = 
+{
+	 &apos;resource&apos;: {
+		 &apos;DiagnosticOrder&apos;: {
+			 &apos;item&apos;: {
+				 &apos;code&apos;: {
+					 &apos;coding&apos;: {
+						 &apos;code&apos;: {
+							 &apos;value&apos;: 91431
+						},
+						 &apos;display&apos;: {
+							 &apos;value&apos;: &apos;Chlamydia&apos;
+						}
+					}
+				},
+				 &apos;specimen&apos;: {
+					 &apos;display&apos;: {
+						 &apos;value&apos;: &apos;G&apos;
+					}
+				}
+			},
+			 &apos;subject&apos;: {
+				 &apos;id&apos;: &apos;Patient&apos;
+			},
+			 &apos;id&apos;: {
+				 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+			},
+			 &apos;event&apos;: {
+				 &apos;dateTime&apos;: {
+					 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+				},
+				 &apos;actor&apos;: {
+					 &apos;reference&apos;: {
+						 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+					}
+				},
+				 &apos;status&apos;: {
+					 &apos;value&apos;: &apos;completed&apos;
+				}
+			}
+		}
+	}
+};
+
+var report =
+{
+	 &apos;resource&apos;: {
+		 &apos;DiagnosticReport&apos;: {
+			 &apos;result&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+				}
+			},
+			 &apos;identifier&apos;: {
+				 &apos;system&apos;: {
+					 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+				},
+				 &apos;type&apos;: {
+					 &apos;id&apos;: &apos;99QDI&apos;
+				},
+				 &apos;value&apos;: {
+					 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+				}
+			},
+			 &apos;request&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+				}
+			},
+			 &apos;contained&apos;: {
+				 &apos;Practitioner&apos;: {
+					 &apos;identifier&apos;: {
+						 &apos;value&apos;: {
+							 &apos;value&apos;: &apos;NPP_ID&apos;
+						}
+					},
+					 &apos;name&apos;: {
+						 &apos;family&apos;: {
+							 &apos;value&apos;: &apos;NPP_Name&apos;
+						}
+					},
+					 &apos;id&apos;: {
+						 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+					}
+				}
+			},
+			 &apos;extension&apos;: {
+				 &apos;valueTiming&apos;: &apos;&apos;
+			},
+			 &apos;code&apos;: {
+				 &apos;id&apos;: 10124
+			},
+			 &apos;performer&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+				}
+			},
+			 &apos;subject&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;Patient&apos;
+				}
+			},
+			 &apos;effectiveElementDefinition&apos;: {
+				 &apos;extension&apos;: {
+					 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+				}
+			},
+			 &apos;id&apos;: {
+				 &apos;value&apos;: &apos;ORC-common-order-1&apos;
+			},
+			 &apos;status&apos;: {
+				 &apos;value&apos;: &apos;final&apos;
+			}
+		}
+	}
+};	
+
+
+	var code    = item.code;
+	var display = item.display; 
+
+	report.resource.DiagnosticReport.id.value = index + &apos;&apos;;
+	report.resource.DiagnosticReport.request.reference.value = &quot;DiagnosticOrder/&quot; + index + &apos;&apos;;
+	
+	tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( report );	
+//	logger.error( &quot;Test: &quot; + code + &quot; - &quot; + display );
+	
+	order.resource.DiagnosticOrder.item.code.coding.code.value = code;
+	order.resource.DiagnosticOrder.item.code.coding.display.value = display						 
+	order.resource.DiagnosticOrder.id.value = index;
+	
+	tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( order );		
+
+	index++;
+}
+
+/*
+
+var Entries = 
+[
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86631
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Chlamydia&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-1&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 87591
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Gonorrhea&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-2&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86704
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Hepatitis A&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-3&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-3&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 87340
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Hepatitis B&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-4&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-4&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 81001
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Hepatitis C&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-5&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-5&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86695
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Herpes 1&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-6&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-6&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86696
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Herpes 2&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-7&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-7&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86701
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;HIV Type1&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-8&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-8&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86702
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;HIV Type 2&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-9&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-9&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86592
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Syphilis&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-10&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-10&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			}
+]
+;
+*/
+/*
+for( var i=0 ; i&lt;Entries.length; i++ )
+{
+	tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( Entries[i] );	
+}
+*/</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>var Panel = 
+[
+	{ &apos;code&apos;: &apos;91431&apos;, &apos;display&apos;: &apos;HIV 1/2 ANTIGEN/ANTIBODY,FOURTH GENERATION W/RFL&apos; },
+	{ &apos;code&apos;: &apos;8472&apos;, &apos;display&apos;: &apos;HEPATITIS C AB W/REFL TO HCV RNA, QN, PCR^SERUM&apos; },
+	{ &apos;code&apos;: &apos;498&apos;, &apos;display&apos;: &apos;HEPATITIS B SURFACE ANTIGEN W/REFL CONFIRM&apos; },
+	{ &apos;code&apos;: &apos;3640&apos;, &apos;display&apos;: &apos;HSV 2 IGG, TYPE SPECIFIC AB&apos; },
+	{ &apos;code&apos;: &apos;799&apos;, &apos;display&apos;: &apos;RPR (MONITOR) W/REFL TITER&apos; }, /*Syphylis*/
+	{ &apos;code&apos;: &apos;11362&apos;, &apos;display&apos;: &apos;NEISSERIA GONORRHOEAE RNA, TMA&apos; },
+	{ &apos;code&apos;: &apos;11363&apos;, &apos;display&apos;: &apos;CHLAMYDIA/N. GONORRHOEAE RNA, TMA&apos; }		
+]
+;
+
+
+var index = 1;
+
+for each( item in Panel )
+{
+
+var order = 
+{
+	 &apos;resource&apos;: {
+		 &apos;DiagnosticOrder&apos;: {
+			 &apos;item&apos;: {
+				 &apos;code&apos;: {
+					 &apos;coding&apos;: {
+						 &apos;code&apos;: {
+							 &apos;value&apos;: 91431
+						},
+						 &apos;display&apos;: {
+							 &apos;value&apos;: &apos;Chlamydia&apos;
+						}
+					}
+				},
+				 &apos;specimen&apos;: {
+					 &apos;display&apos;: {
+						 &apos;value&apos;: &apos;G&apos;
+					}
+				}
+			},
+			 &apos;subject&apos;: {
+				 &apos;id&apos;: &apos;Patient&apos;
+			},
+			 &apos;id&apos;: {
+				 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+			},
+			 &apos;event&apos;: {
+				 &apos;dateTime&apos;: {
+					 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+				},
+				 &apos;actor&apos;: {
+					 &apos;reference&apos;: {
+						 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+					}
+				},
+				 &apos;status&apos;: {
+					 &apos;value&apos;: &apos;completed&apos;
+				}
+			}
+		}
+	}
+};
+
+var report =
+{
+	 &apos;resource&apos;: {
+		 &apos;DiagnosticReport&apos;: {
+			 &apos;result&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+				}
+			},
+			 &apos;identifier&apos;: {
+				 &apos;system&apos;: {
+					 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+				},
+				 &apos;type&apos;: {
+					 &apos;id&apos;: &apos;99QDI&apos;
+				},
+				 &apos;value&apos;: {
+					 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+				}
+			},
+			 &apos;request&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+				}
+			},
+			 &apos;contained&apos;: {
+				 &apos;Practitioner&apos;: {
+					 &apos;identifier&apos;: {
+						 &apos;value&apos;: {
+							 &apos;value&apos;: &apos;NPP_ID&apos;
+						}
+					},
+					 &apos;name&apos;: {
+						 &apos;family&apos;: {
+							 &apos;value&apos;: &apos;NPP_Name&apos;
+						}
+					},
+					 &apos;id&apos;: {
+						 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+					}
+				}
+			},
+			 &apos;extension&apos;: {
+				 &apos;valueTiming&apos;: &apos;&apos;
+			},
+			 &apos;code&apos;: {
+				 &apos;id&apos;: 10124
+			},
+			 &apos;performer&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+				}
+			},
+			 &apos;subject&apos;: {
+				 &apos;reference&apos;: {
+					 &apos;value&apos;: &apos;Patient&apos;
+				}
+			},
+			 &apos;effectiveElementDefinition&apos;: {
+				 &apos;extension&apos;: {
+					 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+				}
+			},
+			 &apos;id&apos;: {
+				 &apos;value&apos;: &apos;ORC-common-order-1&apos;
+			},
+			 &apos;status&apos;: {
+				 &apos;value&apos;: &apos;final&apos;
+			}
+		}
+	}
+};	
+
+
+	var code    = item.code;
+	var display = item.display; 
+
+	report.resource.DiagnosticReport.id.value = index + &apos;&apos;;
+	report.resource.DiagnosticReport.request.reference.value = &quot;DiagnosticOrder/&quot; + index + &apos;&apos;;
+	
+	tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( report );	
+//	logger.error( &quot;Test: &quot; + code + &quot; - &quot; + display );
+	
+	order.resource.DiagnosticOrder.item.code.coding.code.value = code;
+	order.resource.DiagnosticOrder.item.code.coding.display.value = display						 
+	order.resource.DiagnosticOrder.id.value = index;
+	
+	tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( order );		
+
+	index++;
+}
+
+/*
+
+var Entries = 
+[
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86631
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Chlamydia&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-1&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 87591
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Gonorrhea&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-2&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86704
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Hepatitis A&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-3&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-3&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 87340
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Hepatitis B&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-4&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-4&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 81001
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Hepatitis C&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-5&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-5&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86695
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Herpes 1&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-6&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-6&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86696
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Herpes 2&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-7&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-7&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86701
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;HIV Type1&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-8&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-8&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86702
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;HIV Type 2&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-9&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-9&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticOrder&apos;: {
+						 &apos;item&apos;: {
+							 &apos;code&apos;: {
+								 &apos;coding&apos;: {
+									 &apos;code&apos;: {
+										 &apos;value&apos;: 86592
+									},
+									 &apos;display&apos;: {
+										 &apos;value&apos;: &apos;Syphilis&apos;
+									}
+								}
+							},
+							 &apos;specimen&apos;: {
+								 &apos;display&apos;: {
+									 &apos;value&apos;: &apos;G&apos;
+								}
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;id&apos;: &apos;Patient&apos;
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;OBR-observation-request-10&apos;
+						},
+						 &apos;event&apos;: {
+							 &apos;dateTime&apos;: {
+								 &apos;value&apos;: &apos;2016-11-18T20:51:55+00:00&apos;
+							},
+							 &apos;actor&apos;: {
+								 &apos;reference&apos;: {
+									 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+								}
+							},
+							 &apos;status&apos;: {
+								 &apos;value&apos;: &apos;completed&apos;
+							}
+						}
+					}
+				}
+			},
+			{
+				 &apos;resource&apos;: {
+					 &apos;DiagnosticReport&apos;: {
+						 &apos;result&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Observation/OBX-observation-1&apos;
+							}
+						},
+						 &apos;identifier&apos;: {
+							 &apos;system&apos;: {
+								 &apos;value&apos;: &apos;QUEST_SKB_7186121&apos;
+							},
+							 &apos;type&apos;: {
+								 &apos;id&apos;: &apos;99QDI&apos;
+							},
+							 &apos;value&apos;: {
+								 &apos;value&apos;: $(&apos;PlacerOrderNumber&apos;)
+							}
+						},
+						 &apos;request&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;DiagnosticOrder/obr-observation-request&apos;
+							}
+						},
+						 &apos;contained&apos;: {
+							 &apos;Practitioner&apos;: {
+								 &apos;identifier&apos;: {
+									 &apos;value&apos;: {
+										 &apos;value&apos;: &apos;NPP_ID&apos;
+									}
+								},
+								 &apos;name&apos;: {
+									 &apos;family&apos;: {
+										 &apos;value&apos;: &apos;NPP_Name&apos;
+									}
+								},
+								 &apos;id&apos;: {
+									 &apos;value&apos;: &apos;ORC11-verified-by&apos;
+								}
+							}
+						},
+						 &apos;extension&apos;: {
+							 &apos;valueTiming&apos;: &apos;&apos;
+						},
+						 &apos;code&apos;: {
+							 &apos;id&apos;: 10124
+						},
+						 &apos;performer&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Practitioner/ordering-provider-1&apos;
+							}
+						},
+						 &apos;subject&apos;: {
+							 &apos;reference&apos;: {
+								 &apos;value&apos;: &apos;Patient&apos;
+							}
+						},
+						 &apos;effectiveElementDefinition&apos;: {
+							 &apos;extension&apos;: {
+								 &apos;url&apos;: &apos;http://hl7.org/fhir/v3/NullFlavor/NI&apos;
+							}
+						},
+						 &apos;id&apos;: {
+							 &apos;value&apos;: &apos;ORC-common-order-10&apos;
+						},
+						 &apos;status&apos;: {
+							 &apos;value&apos;: &apos;final&apos;
+						}
+					}
+				}
+			}
+]
+;
+*/
+/*
+for( var i=0 ; i&lt;Entries.length; i++ )
+{
+	tmp[&apos;Bundle&apos;][&apos;entry&apos;].push( Entries[i] );	
+}
+*/</string>
+            </entry>
+          </data>
+        </step>
+      </steps>
+      <inboundTemplate encoding="base64">ewoJICJQYXRpZW50SUQiOiAiU0FGRS4xMTExMTExMSIsCgkgIkxhYlRva2VuIjogIlF1ZXN0IiwK
+CSAiTGFiRmFjaWxpdHkiOiJTVEwiLAoJICJTYWZlT3JkZXJJRCI6IDEsCgkgIkJpbGxUeXBlIjoi
+UCIsCgkgIk9yZGVyaW5nUHJvdmlkZXJGaXJzdE5hbWUiOiJKb2huIiwKCSAiT3JkZXJpbmdQcm92
+aWRlck1pZGRsZU5hbWUiOiJRLiIsCgkgIk9yZGVyaW5nUHJvdmlkZXJMYXN0TmFtZSI6IlNhd2Jv
+bmVzIiwKCSAiT3JkZXJpbmdQcm92aWRlck5QSSI6IjExMTExMTExMTEiLAoJICJHdWFyYW50b3JG
+aXJzdE5hbWUiOiJ4IiwKCSAiR3VhcmFudG9yTWlkZGxlTmFtZSI6InkiLAoJICJHdWFyYW50b3JM
+YXN0TmFtZSI6InoiLAoJICJHdWFyYW50b3JBZGRyZXNzIjoiMTExIExhbmUgTG4iLAoJICJHdWFy
+YW50b3JDaXR5IjoiTm93aGVyZSIsCgkgIkd1YXJhbnRvclN0YXRlIjoiTVQiLAoJICJHdWFyYW50
+b3JaaXAiOiIwMDAwMC0wMDAwIiwKCSAiR3VhcmFudG9yUGhvbmUiOiIwMDAwMDAwMDAwIiwKCSAi
+SW5zdXJhbmNlQ29kZSI6IkFVSFNDIiwKCSAiUGxhbkNvZGUiOiIxMTExMTEiLAoJICJQb2xpY3lO
+dW1iZXIiOiIxMTExMTExMS0xMSIsCgkgIkluY2x1ZGVkVGVzdHMiOiBbCgkJIkhFUEMiLAoJCSJB
+SURTMSIsCgkJIkFJRFMyIgoJICBdLAoJICAiUGxhY2VyT3JkZXJOdW1iZXJPdmVycmlkZSI6Ijki
+Cn0=</inboundTemplate>
+      <outboundTemplate encoding="base64">eyJCdW5kbGUiOiB7CiAgImVudHJ5IjogWwogIF0sCiAgImlkIjogeyJ2YWx1ZSI6ICJPTUwtTzIx
+LWIxYTE3Y2QyLTg2NWYtNDg2YS05NjBkLThlYTc3NjRlYzAwZCJ9LAogICJ0eXBlIjogeyJ2YWx1
+ZSI6ICJzZWFyY2hzZXQifQp9fQ==</outboundTemplate>
+      <inboundDataType>JSON</inboundDataType>
+      <outboundDataType>JSON</outboundDataType>
+      <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </inboundProperties>
+      <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </outboundProperties>
+    </transformer>
+    <filter version="3.4.2">
+      <rules/>
+    </filter>
+    <transportName>HTTP Listener</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <waitForPrevious>true</waitForPrevious>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector version="3.4.2">
+      <metaDataId>1</metaDataId>
+      <name>To Send Order</name>
+      <properties class="com.mirth.connect.connectors.vm.VmDispatcherProperties" version="3.4.2">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.4.2">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="linked-hash-map">
+            <entry>
+              <string>Default Resource</string>
+              <string>[Default Resource]</string>
+            </entry>
+            <entry>
+              <string>29f52768-5925-40e8-b62d-a265b40e6ab4</string>
+              <string>hapi-fhir</string>
+            </entry>
+          </resourceIds>
+          <queueBufferSize>1000</queueBufferSize>
+        </destinationConnectorProperties>
+        <channelId>4c7bc0bd-aede-4e90-9ce8-cde50750f1e8</channelId>
+        <channelTemplate>${message.encodedData}</channelTemplate>
+        <mapVariables/>
+      </properties>
+      <transformer version="3.4.2">
+        <steps/>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>JSON</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.4.2">
+        <steps/>
+        <inboundDataType>JSON</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.4.2">
+        <rules>
+          <rule>
+            <sequenceNumber>0</sequenceNumber>
+            <name>Quest?</name>
+            <data>
+              <entry>
+                <string>Script</string>
+                <string>return $(&apos;LabToken&apos;).toUpperCase() == &quot;QUEST&quot;;</string>
+              </entry>
+            </data>
+            <type>JavaScript</type>
+            <script>return $(&apos;LabToken&apos;).toUpperCase() == &quot;QUEST&quot;;</script>
+            <operator>NONE</operator>
+          </rule>
+        </rules>
+      </filter>
+      <transportName>Channel Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+    <connector version="3.4.2">
+      <metaDataId>2</metaDataId>
+      <name>Dummy</name>
+      <properties class="com.mirth.connect.connectors.vm.VmDispatcherProperties" version="3.4.2">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.4.2">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="linked-hash-map">
+            <entry>
+              <string>Default Resource</string>
+              <string>[Default Resource]</string>
+            </entry>
+          </resourceIds>
+          <queueBufferSize>1000</queueBufferSize>
+        </destinationConnectorProperties>
+        <channelId>none</channelId>
+        <channelTemplate>${message.encodedData}</channelTemplate>
+        <mapVariables/>
+      </properties>
+      <transformer version="3.4.2">
+        <steps/>
+        <inboundDataType>JSON</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.4.2">
+        <steps/>
+        <inboundDataType>JSON</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.4.2">
+        <rules/>
+      </filter>
+      <transportName>Channel Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>false</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+  </destinationConnectors>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+// Responses returned from here will be stored as &quot;Postprocessor&quot; in the response map
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <undeployScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</undeployScript>
+  <properties version="3.4.2">
+    <clearGlobalChannelMap>true</clearGlobalChannelMap>
+    <messageStorageMode>DEVELOPMENT</messageStorageMode>
+    <encryptData>false</encryptData>
+    <removeContentOnCompletion>false</removeContentOnCompletion>
+    <removeOnlyFilteredOnCompletion>false</removeOnlyFilteredOnCompletion>
+    <removeAttachmentsOnCompletion>false</removeAttachmentsOnCompletion>
+    <initialState>STARTED</initialState>
+    <storeAttachments>false</storeAttachments>
+    <tags class="linked-hash-set">
+      <string>RKW</string>
+    </tags>
+    <metaDataColumns>
+      <metaDataColumn>
+        <name>SOURCE</name>
+        <type>STRING</type>
+        <mappingName>mirth_source</mappingName>
+      </metaDataColumn>
+      <metaDataColumn>
+        <name>TYPE</name>
+        <type>STRING</type>
+        <mappingName>mirth_type</mappingName>
+      </metaDataColumn>
+    </metaDataColumns>
+    <attachmentProperties version="3.4.2">
+      <type>None</type>
+      <properties/>
+    </attachmentProperties>
+    <archiveEnabled>true</archiveEnabled>
+    <resourceIds class="linked-hash-map">
+      <entry>
+        <string>Default Resource</string>
+        <string>[Default Resource]</string>
+      </entry>
+      <entry>
+        <string>29f52768-5925-40e8-b62d-a265b40e6ab4</string>
+        <string>hapi-fhir</string>
+      </entry>
+    </resourceIds>
+  </properties>
+  <codeTemplateLibraries/>
+</channel>

@@ -1,0 +1,1859 @@
+<channel version="3.4.2">
+  <id>ae149084-1aaa-4867-a7e3-b66860874f05</id>
+  <nextMetaDataId>3</nextMetaDataId>
+  <name>Gateway</name>
+  <description>Receives SubmitOrder XML feed, transforms to JSON and routes to Quest or LabCorp SubmitOrder channels.
+
+Last updated: March 11, 2017</description>
+  <enabled>false</enabled>
+  <lastModified>
+    <time>1489352132059</time>
+    <timezone>UTC</timezone>
+  </lastModified>
+  <revision>12</revision>
+  <sourceConnector version="3.4.2">
+    <metaDataId>0</metaDataId>
+    <name>sourceConnector</name>
+    <properties class="com.mirth.connect.connectors.fhir.shared.FhirReceiverProperties" version="3.4.2">
+      <pluginProperties>
+        <com.mirth.connect.plugins.httpauth.NoneHttpAuthProperties version="3.4.2">
+  <authType>NONE</authType>
+        </com.mirth.connect.plugins.httpauth.NoneHttpAuthProperties>
+      </pluginProperties>
+      <listenerConnectorProperties version="3.4.2">
+        <host>0.0.0.0</host>
+        <port>9099</port>
+      </listenerConnectorProperties>
+      <sourceConnectorProperties version="3.4.2">
+        <responseVariable>OperationOutcome</responseVariable>
+        <respondAfterProcessing>true</respondAfterProcessing>
+        <processBatch>false</processBatch>
+        <firstResponse>false</firstResponse>
+        <processingThreads>1</processingThreads>
+        <resourceIds class="linked-hash-map">
+          <entry>
+            <string>Default Resource</string>
+            <string>[Default Resource]</string>
+          </entry>
+        </resourceIds>
+        <queueBufferSize>1000</queueBufferSize>
+      </sourceConnectorProperties>
+      <contextPath></contextPath>
+      <timeout>0</timeout>
+      <conformanceTemplate></conformanceTemplate>
+      <conformanceURL></conformanceURL>
+      <conformanceName></conformanceName>
+      <supportsXML>true</supportsXML>
+      <supportsJSON>true</supportsJSON>
+      <systemInteractions>
+        <com.mirth.connect.connectors.fhir.shared.FhirRestfulInteraction>FHIR_HISTORY_SYSTEM</com.mirth.connect.connectors.fhir.shared.FhirRestfulInteraction>
+        <com.mirth.connect.connectors.fhir.shared.FhirRestfulInteraction>FHIR_SEARCH_SYSTEM</com.mirth.connect.connectors.fhir.shared.FhirRestfulInteraction>
+        <com.mirth.connect.connectors.fhir.shared.FhirRestfulInteraction>FHIR_TRANSACTION</com.mirth.connect.connectors.fhir.shared.FhirRestfulInteraction>
+      </systemInteractions>
+      <resourceProperties>
+        <disabledInteractions/>
+      </resourceProperties>
+    </properties>
+    <transformer version="3.4.2">
+      <steps>
+        <step>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Route to destination</name>
+          <script>if (msg[&apos;id&apos;][&apos;@value&apos;].toString().indexOf(&quot;OML-O21&quot;) &gt; -1) {
+	
+	// Route to Quest SubmitOrder	
+	destinationSet.removeAllExcept([&quot;SubmitOrder Quest&quot;]);
+	
+} else {
+	// TODO: Route to LabCorp SubmitOrder
+	destinationSet.removeAll();
+}</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>if (msg[&apos;id&apos;][&apos;@value&apos;].toString().indexOf(&quot;OML-O21&quot;) &gt; -1) {
+	
+	// Route to Quest SubmitOrder	
+	destinationSet.removeAllExcept([&quot;SubmitOrder Quest&quot;]);
+	
+} else {
+	// TODO: Route to LabCorp SubmitOrder
+	destinationSet.removeAll();
+}</string>
+            </entry>
+          </data>
+        </step>
+      </steps>
+      <inboundTemplate encoding="base64">PEJ1bmRsZT4KCTxpZCB2YWx1ZT0iT01MLU8yMS1yZXF1aXNpdGlvbi0xIi8+Cgk8dHlwZSB2YWx1
+ZT0ic2VhcmNoc2V0Ii8+Cgk8ZW50cnk+PCEtLSBQYXRpZW50IChQSUQpIC0tPgoJCTxyZXNvdXJj
+ZT4KCQkJPFBhdGllbnQ+CgkJCQk8aWQgdmFsdWU9IlBJRC1wYXRpZW50LWlkZW50aWZpY2F0aW9u
+Ii8+CgkJCQk8IS0tIFBJRC4yIFtFeHRlcm5hbCBJRF0gLSBUaGUgcGxhY2VyJ3MgcGF0aWVudCBJ
+RCBhc3NpZ25lZCB0byB0aGlzIG9yZGVyLiAtLT4KCQkJCTxpZGVudGlmaWVyPgoJCQkJCTwhLS0g
+KFNOKSBIYXJkLWNvZGVkIC0tPgoJCQkJCTx1c2UgdmFsdWU9InNlY29uZGFyeSIvPgoJCQkJCTx0
+eXBlPgoJCQkJCQk8Y29kaW5nPgoJCQkJCQkJPCEtLSBQSUQuMi43IFtJZGVudGlmaWVyIFR5cGUg
+Q29kZV0gLSBPcHRpb25hbCAtLT4KCQkJCQkJCTxjb2RlIHZhbHVlPSJQVCIvPgoJCQkJCQk8L2Nv
+ZGluZz4KCQkJCQk8L3R5cGU+CgkJCQkJPCEtLSBQSUQuMi4xIFtQYXRpZW50IElEIChJbnRlcm5h
+bCldIC0gUmVxdWlyZWQgLS0+CgkJCQkJPHZhbHVlIHZhbHVlPSIyMDUyNjYxOSIvPgoJCQkJPC9p
+ZGVudGlmaWVyPgoJCQkJPCEtLSBQSUQuMyBbUGF0aWVudCBJZGVudGlmaWVyIExpc3RdIC0gVGhl
+IHBsYWNlcidzIHBhdGllbnQgSUQgYXNzaWduZWQgdG8gdGhpcyBvcmRlci4gLS0+CgkJCQk8aWRl
+bnRpZmllcj4KCQkJCQk8IS0tIChTTikgSGFyZC1jb2RlZCAtLT4KCQkJCQk8dXNlIHZhbHVlPSJv
+ZmZpY2lhbCIvPgoJCQkJCTx0eXBlPgoJCQkJCQk8Y29kaW5nPgoJCQkJCQkJPCEtLSBQSUQuMi43
+IFtJZGVudGlmaWVyIFR5cGUgQ29kZV0gLSBPcHRpb25hbCAtLT4KCQkJCQkJCTxjb2RlIHZhbHVl
+PSJQVCIvPgoJCQkJCQk8L2NvZGluZz4KCQkJCQk8L3R5cGU+CgkJCQkJPCEtLSBQSUQuMi4xIFtQ
+YXRpZW50IElEIChJbnRlcm5hbCldIC0gUmVxdWlyZWQgLS0+CgkJCQkJPHZhbHVlIHZhbHVlPSIy
+MDUyNjYxOSIvPgoJCQkJCTwhLS0gUElELjMuNCBbQXNzaWduaW5nIEF1dGhvcml0eV0gLSBPcHRp
+b25hbCAtLT4KCQkJCQk8IS0tIChTTikgSWYgdmFsdWUgaXMgbm90IGtub3duLCBkbyBub3QgaW5j
+bHVkZSAtLT4KCQkJCQk8YXNzaWduZXI+CgkJCQkJCTwhLS0gVmFsaWQgdmFsdWVzIGZvciBBc3Np
+Z25pbmcgQXV0aG9yaXR5IGluY2x1ZGU6IE1STiAoTWVkaWNhbCBSZWNvcmQgTnVtYmVyKSBvciBD
+SUQgKENoYXJ0IElEKSAtLT4KCQkJCQkJPGRpc3BsYXkgdmFsdWU9Ik1STiIvPgoJCQkJCTwvYXNz
+aWduZXI+CgkJCQk8L2lkZW50aWZpZXI+CgkJCQk8IS0tIFBJRC41IFtQYXRpZW50IE5hbWVdIC0g
+UmVxdWlyZWQgLS0+CgkJCQk8IS0tIChTTikgVGhlIGVudGlyZSBwYXRpZW50IG5hbWUgKGV4Y2x1
+ZGluZyB0aGUgZGVsaW1pdGVyKSBjYW5ub3QgZXhjZWVkIDI0IGNoYXJhY3RlcnMuIC0tPgoJCQkJ
+PG5hbWU+CgkJCQkJPCEtLSAoU04pICJ1c2UiIGVsZW1lbnQgaXMgaGFyZGNvZGVkIGZvciBwcmlt
+YXJ5IHBhdGllbnQgbmFtZSAtLT4KCQkJCQk8dXNlIHZhbHVlPSJvZmZpY2lhbCIvPgoJCQkJCTwh
+LS0gUElELjUuMSBbRmFtaWx5IE5hbWVdIC0tPgoJCQkJCTwhLS0gKFNOKSBUaGUgbGFzdCBuYW1l
+IGNhbiBiZSBhIG1heGltdW0gb2YgMjAgY2hhcmFjdGVycy4gQW55IGxhc3QgbmFtZSBsb25nZXIg
+dGhhbiB0aGUgYWxsb3dlZCBsaW1pdCBpcyB0cnVuY2F0ZWQgaW4gdGhlIGNvcnJlc3BvbmRpbmcg
+cmVzdWx0IG1lc3NhZ2UuIC0tPgoJCQkJCTxmYW1pbHkgdmFsdWU9IlRFU1QiLz4KCQkJCQk8IS0t
+IFBJRC41LjIgW0dpdmVuIE5hbWVdIC0tPgoJCQkJCTwhLS0gKFNOKSBUaGUgZmlyc3QgbmFtZSBp
+cyBsaW1pdGVkIHRvIHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gdGhlIG51bWJlciBvZiBjaGFyYWN0
+ZXJzIGluIHRoZSBsYXN0IG5hbWUgYW5kIDI0LiAtLT4KCQkJCQk8Z2l2ZW4gdmFsdWU9IlRDMSIv
+PgoJCQkJPC9uYW1lPgoJCQkJPCEtLSBQSUQuMTMgW1Bob25lIE51bWJlciAtIEhvbWVdIC0gQ29u
+ZGl0aW9uYWwgLS0+CgkJCQk8IS0tIChTTikgVGhpcyBmaWVsZCBpcyByZXF1aXJlZCBpZiBJTjEu
+NDcgKENvdmVyYWdlIFR5cGUpIGlzIFAgKFBhdGllbnQgQmlsbCkgb3IgVCAoVGhpcmQtUGFydHkg
+QmlsbCkuIC0tPgoJCQkJPHRlbGVjb20+CgkJCQkJPHN5c3RlbSB2YWx1ZT0icGhvbmUiLz4KCQkJ
+CQk8dmFsdWUgdmFsdWU9Ijk3Mi05MTYtMzAwMCIvPgoJCQkJCTx1c2UgdmFsdWU9ImhvbWUiLz4K
+CQkJCTwvdGVsZWNvbT4KCQkJCTwhLS0gUElELjggW0FkbWluaXN0cmF0aXZlIEdlbmRlcl0gLSBS
+ZXF1aXJlZCAtLT4KCQkJCTxnZW5kZXIgdmFsdWU9ImZlbWFsZSIvPgoJCQkJPCEtLSBQSUQuNyBb
+RGF0ZSBvZiBCaXJ0aF0gLSBSZXF1aXJlZCAtLT4KCQkJCTxiaXJ0aERhdGUgdmFsdWU9IjE5NTAt
+MDEtMTYiLz4KCQkJCTwhLS0gUElELjExIFtQYXRpZW50IEFkZHJlc3NdIC0gQ29uZGl0aW9uYWwg
+LS0+CgkJCQk8IS0tIChTTikgVGhpcyBmaWVsZCBpcyByZXF1aXJlZCBpZiBJTjEuNDcgKENvdmVy
+YWdlIFR5cGUpIGlzIFAgKFBhdGllbnQgQmlsbCkgb3IgVCAoVGhpcmQtUGFydHkgQmlsbCkuIC0t
+PgoJCQkJPGFkZHJlc3M+CgkJCQkJPHVzZSB2YWx1ZT0iaG9tZSIvPgoJCQkJCTxsaW5lIHZhbHVl
+PSI0NzcwIFJlZ2VudCBCbHZkLiIvPgoJCQkJCTxjaXR5IHZhbHVlPSJJcnZpbmciLz4KCQkJCQk8
+c3RhdGUgdmFsdWU9IlRYIi8+CgkJCQkJPHBvc3RhbENvZGUgdmFsdWU9Ijc1MDYzIi8+CgkJCQk8
+L2FkZHJlc3M+CgkJCTwvUGF0aWVudD4KCQk8L3Jlc291cmNlPgoJPC9lbnRyeT4KCTxlbnRyeT48
+IS0tIERpYWdub3N0aWNSZXBvcnQgKE9SQykgLS0+CgkJPHJlc291cmNlPgoJCQk8IS0tIFRoZSBP
+UkMgc2VnbWVudCBpcyByZXF1aXJlZCBpbiB0aGUgT01MIG1lc3NhZ2UuIE9ubHkgb25lIHBlciBv
+cmRlci4gLS0+CgkJCTwhLS0gKFNOKSBPcHRpb25hbCBPUkMuMTIgW09yZGVyaW5nIFByb3ZpZGVy
+XSBpcyBkZWZpbmVkIGluIGFzIE9CUi4xNiBpbiB0aGUgRGlhZ25vc3RpY09yZGVyIHJlc291cmNl
+IC0tPgoJCQk8RGlhZ25vc3RpY1JlcG9ydD4KCQkJCTxpZCB2YWx1ZT0iT1JDLWNvbW1vbi1vcmRl
+ci0xIi8+CgkJCQk8IS0tIFRRMSBbVGltaW5nL1F1YW50aXR5XSAtIFJlcXVpcmVkIC0tPgoJCQkJ
+PCEtLSAoU04pIFJlcXVpcmVkIGlmIGNvbW1vbiBvcmRlciAoT1JDKSBpcyBwcmVzZW50LCBvbmx5
+IG9uZSBwZXIgb3JkZXIgLS0+CgkJCQk8ZXh0ZW5zaW9uIHVybD0iaHR0cDovL2hsNy5vcmcvZmhp
+ci92Mi90cTEiPgoJCQkJCTx2YWx1ZVRpbWluZz4KCQkJCQkJPCEtLSBUUTEuNyBbU3RhcnQgRGF0
+ZS9UaW1lXSAtIE9wdGlvbmFsIC0tPgoJCQkJCQk8ZXZlbnQgdmFsdWU9IjIwMTYtMDEtMDdUMDk6
+MDA6MDAtMDU6MDAiLz4KCQkJCQkJPCEtLSBUUTEuOSBbUHJpb3JpdHldIC0gT3B0aW9uYWwgLS0+
+CgkJCQkJCTxjb2RlPgoJCQkJCQkJPGNvZGluZz4KCQkJCQkJCQk8IS0tIChTTikgRm9yIHZhbHVl
+cyBzZWUgSEw3djIuNS4xIENoYXB0ZXIgMDQsIFVzZXItRGVmaW5lZCBUYWJsZSAwNDg1IO+/vSBF
+eHRlbmRlZCBQcmlvcml0eSBDb2RlcyAtLT4KCQkJCQkJCQk8c3lzdGVtIHZhbHVlPSJodHRwOi8v
+aGw3Lm9yZy9maGlyL3YyLzA0ODUiLz4KCQkJCQkJCQk8Y29kZSB2YWx1ZT0iUyIvPgoJCQkJCQkJ
+CTxkaXNwbGF5IHZhbHVlPSJTdGF0Ii8+CgkJCQkJCQk8L2NvZGluZz4KCQkJCQkJPC9jb2RlPgoJ
+CQkJCTwvdmFsdWVUaW1pbmc+CgkJCQk8L2V4dGVuc2lvbj4JCQkJCgkJCQk8IS0tIE9SQy4yIFtQ
+bGFjZXIgT3JkZXIgTnVtYmVyXSAtIFJlcXVpcmVkIC0tPgoJCQkJPCEtLSBUaGUgdmFsdWUgaW4g
+T1JDLjAyLjAxIChFbnRpdHkgSWRlbnRpZmllcikgaXMgdGhlIHNhbWUgYXMgdGhlIHZhbHVlIGlu
+IE9CUi4wMi4wMSAoRW50aXR5IElkZW50aWZpZXIpLiAtLT4KCQkJCTwhLS0gQWxsIHZhbHVlcyBm
+b3IgdGhpcyBmaWVsZCBpbiBhbGwgT1JDIGFuZCBPQlIgc2VnbWVudHMgYXJlIGlkZW50aWNhbC4g
+T3RoZXJ3aXNlLCB0aGUgb3JkZXIgd2lsbCBiZSByZWplY3RlZC4gLS0+CgkJCQk8aWRlbnRpZmll
+cj4KCQkJCQk8IS0tIE9SQy4yLjEgW0VudGl0eSBJZGVudGlmaWVyIC8gVW5pcXVlIFBsYWNlciBJ
+RF0gLSBSZXF1aXJlZCAtLT4KCQkJCQk8IS0tIChTTikgTXVzdCBtYXRjaCBPQlIuMi4wMSBbRW50
+aXR5IElkZW50aWZpZXJdIG9yIHRoZSBvcmRlciB3aWxsIGJlIHJlamVjdGVkLiAtLT4KCQkJCQk8
+dmFsdWUgdmFsdWU9Ijk4NzY1NDMyMSIvPgoJCQkJPC9pZGVudGlmaWVyPgoJCQkJPCEtLSAoU04p
+IFJlcXVpcmVkIGJ5IEZISVIgLS0+CgkJCQk8c3RhdHVzIHZhbHVlPSJmaW5hbCIvPgoJCQkJPCEt
+LSBPQlIuNC40IFtBbHRlcm5hdGUgSWRlbnRpZmllcl0gLSBSZXF1aXJlZCAtLT4KCQkJCTwhLS0g
+KFNOKSBJZGVudGlmaWNhdGlvbiBjb2RlIGZvciB0aGUgb3JkZXJlZCB0ZXN0ICAtLT4KCQkJCTxj
+b2RlIGlkPSIxMDEyNCIvPgoJCQkJPHN1YmplY3Q+CgkJCQkJPHJlZmVyZW5jZSB2YWx1ZT0iUGF0
+aWVudCIvPgoJCQkJPC9zdWJqZWN0PgoJCQkJPCEtLSAoU04pIFJlcXVpcmVkIGJ5IEZISVIgLS0+
+CgkJCQk8ZWZmZWN0aXZlRGF0ZVRpbWU+CgkJCQkJPGV4dGVuc2lvbiB1cmw9Imh0dHA6Ly9obDcu
+b3JnL2ZoaXIvdjMvTnVsbEZsYXZvci9OSSIvPgoJCQkJPC9lZmZlY3RpdmVEYXRlVGltZT4KCQkJ
+CTwhLS0gKFNOKSBSZXF1aXJlZCBieSBGSElSIC0tPgoJCQkJPGlzc3VlZD4KCQkJCQk8ZXh0ZW5z
+aW9uIHVybD0iaHR0cDovL2hsNy5vcmcvZmhpci92My9OdWxsRmxhdm9yL05JIi8+CgkJCQk8L2lz
+c3VlZD4KCQkJCTwhLS0gT1JDLjEyIFtPcmRlcmluZyBQcm92aWRlcl0gLSBPcHRpb25hbCAtLT4K
+CQkJCTxwZXJmb3JtZXI+CgkJCQkJPCEtLSAoU04pIFJlZmVyZW5jZSB0byB0aGUgUHJhY3RpdGlv
+bmVyIHJlc291cnNlIC0tPgoJCQkJCTxyZWZlcmVuY2UgdmFsdWU9IlByYWN0aXRpb25lci9vcmRl
+cmluZy1wcm92aWRlci0xIi8+CgkJCQk8L3BlcmZvcm1lcj4KCQkJCTwhLS0gKFNOKSBEZXRhaWxz
+IGNvbmNlcm5pbmcgYSB0ZXN0IG9yIHByb2NlZHVyZSByZXF1ZXN0ZWQuIC0tPgoJCQkJPHJlcXVl
+c3Q+CgkJCQkJPCEtLSAoU04pIFJlZmVyZW5jZSB0byAgRGlhZ25vc3RpY09yZGVyL2lkL0B2YWx1
+ZSAtLT4KCQkJCQk8cmVmZXJlbmNlIHZhbHVlPSJEaWFnbm9zdGljT3JkZXIvT0JSLW9ic2VydmF0
+aW9uLXJlcXVlc3QtMSIvPgoJCQkJPC9yZXF1ZXN0PgoJCQk8L0RpYWdub3N0aWNSZXBvcnQ+CgkJ
+PC9yZXNvdXJjZT4KCTwvZW50cnk+Cgk8ZW50cnk+PCEtLSBEaWFnbm9zdGljUmVwb3J0IChPUkMp
+IC0tPgoJCTxyZXNvdXJjZT4KCQkJPCEtLSBUaGUgT1JDIHNlZ21lbnQgaXMgcmVxdWlyZWQgaW4g
+dGhlIE9NTCBtZXNzYWdlLiBPbmx5IG9uZSBwZXIgb3JkZXIuIC0tPgoJCQk8IS0tIChTTikgT3B0
+aW9uYWwgT1JDLjEyIFtPcmRlcmluZyBQcm92aWRlcl0gaXMgZGVmaW5lZCBpbiBhcyBPQlIuMTYg
+aW4gdGhlIERpYWdub3N0aWNPcmRlciByZXNvdXJjZSAtLT4KCQkJPERpYWdub3N0aWNSZXBvcnQ+
+CgkJCQk8aWQgdmFsdWU9Ik9SQy1jb21tb24tb3JkZXItMiIvPgoJCQkJPCEtLSBUUTEgW1RpbWlu
+Zy9RdWFudGl0eV0gLSBSZXF1aXJlZCAtLT4KCQkJCTwhLS0gKFNOKSBSZXF1aXJlZCBpZiBjb21t
+b24gb3JkZXIgKE9SQykgaXMgcHJlc2VudCwgb25seSBvbmUgcGVyIG9yZGVyIC0tPgoJCQkJPGV4
+dGVuc2lvbiB1cmw9Imh0dHA6Ly9obDcub3JnL2ZoaXIvdjIvdHExIj4KCQkJCQk8dmFsdWVUaW1p
+bmc+CgkJCQkJCTwhLS0gVFExLjcgW1N0YXJ0IERhdGUvVGltZV0gLSBPcHRpb25hbCAtLT4KCQkJ
+CQkJPGV2ZW50IHZhbHVlPSIyMDE2LTAxLTA3VDA5OjAwOjAwLTA1OjAwIi8+CgkJCQkJCTwhLS0g
+VFExLjkgW1ByaW9yaXR5XSAtIE9wdGlvbmFsIC0tPgoJCQkJCQk8Y29kZT4KCQkJCQkJCTxjb2Rp
+bmc+CgkJCQkJCQkJPCEtLSAoU04pIEZvciB2YWx1ZXMgc2VlIEhMN3YyLjUuMSBDaGFwdGVyIDA0
+LCBVc2VyLURlZmluZWQgVGFibGUgMDQ4NSDvv70gRXh0ZW5kZWQgUHJpb3JpdHkgQ29kZXMgLS0+
+CgkJCQkJCQkJPHN5c3RlbSB2YWx1ZT0iaHR0cDovL2hsNy5vcmcvZmhpci92Mi8wNDg1Ii8+CgkJ
+CQkJCQkJPGNvZGUgdmFsdWU9IlMiLz4KCQkJCQkJCQk8ZGlzcGxheSB2YWx1ZT0iU3RhdCIvPgoJ
+CQkJCQkJPC9jb2Rpbmc+CgkJCQkJCTwvY29kZT4KCQkJCQk8L3ZhbHVlVGltaW5nPgoJCQkJPC9l
+eHRlbnNpb24+CQkJCQoJCQkJPCEtLSBPUkMuMiBbUGxhY2VyIE9yZGVyIE51bWJlcl0gLSBSZXF1
+aXJlZCAtLT4KCQkJCTwhLS0gVGhlIHZhbHVlIGluIE9SQy4wMi4wMSAoRW50aXR5IElkZW50aWZp
+ZXIpIGlzIHRoZSBzYW1lIGFzIHRoZSB2YWx1ZSBpbiBPQlIuMDIuMDEgKEVudGl0eSBJZGVudGlm
+aWVyKS4gLS0+CgkJCQk8IS0tIEFsbCB2YWx1ZXMgZm9yIHRoaXMgZmllbGQgaW4gYWxsIE9SQyBh
+bmQgT0JSIHNlZ21lbnRzIGFyZSBpZGVudGljYWwuIE90aGVyd2lzZSwgdGhlIG9yZGVyIHdpbGwg
+YmUgcmVqZWN0ZWQuIC0tPgoJCQkJPGlkZW50aWZpZXI+CgkJCQkJPCEtLSBPUkMuMi4xIFtFbnRp
+dHkgSWRlbnRpZmllciAvIFVuaXF1ZSBQbGFjZXIgSURdIC0gUmVxdWlyZWQgLS0+CgkJCQkJPCEt
+LSAoU04pIE11c3QgbWF0Y2ggT0JSLjIuMDEgW0VudGl0eSBJZGVudGlmaWVyXSBvciB0aGUgb3Jk
+ZXIgd2lsbCBiZSByZWplY3RlZC4gLS0+CgkJCQkJPHZhbHVlIHZhbHVlPSI5ODc2NTQzMjEiLz4K
+CQkJCTwvaWRlbnRpZmllcj4KCQkJCTwhLS0gKFNOKSBSZXF1aXJlZCBieSBGSElSIC0tPgoJCQkJ
+PHN0YXR1cyB2YWx1ZT0iZmluYWwiLz4KCQkJCTwhLS0gT0JSLjQuNCBbQWx0ZXJuYXRlIElkZW50
+aWZpZXJdIC0gUmVxdWlyZWQgLS0+CgkJCQk8IS0tIChTTikgSWRlbnRpZmljYXRpb24gY29kZSBm
+b3IgdGhlIG9yZGVyZWQgdGVzdCAgLS0+CgkJCQk8Y29kZSBpZD0iMTAxMjUiLz4KCQkJCTxzdWJq
+ZWN0PgoJCQkJCTxyZWZlcmVuY2UgdmFsdWU9IlBhdGllbnQiLz4KCQkJCTwvc3ViamVjdD4KCQkJ
+CTwhLS0gKFNOKSBSZXF1aXJlZCBieSBGSElSIC0tPgoJCQkJPGVmZmVjdGl2ZURhdGVUaW1lPgoJ
+CQkJCTxleHRlbnNpb24gdXJsPSJodHRwOi8vaGw3Lm9yZy9maGlyL3YzL051bGxGbGF2b3IvTkki
+Lz4KCQkJCTwvZWZmZWN0aXZlRGF0ZVRpbWU+CgkJCQk8IS0tIChTTikgUmVxdWlyZWQgYnkgRkhJ
+UiAtLT4KCQkJCTxpc3N1ZWQ+CgkJCQkJPGV4dGVuc2lvbiB1cmw9Imh0dHA6Ly9obDcub3JnL2Zo
+aXIvdjMvTnVsbEZsYXZvci9OSSIvPgoJCQkJPC9pc3N1ZWQ+CgkJCQk8IS0tIE9SQy4xMiBbT3Jk
+ZXJpbmcgUHJvdmlkZXJdIC0gT3B0aW9uYWwgLS0+CgkJCQk8cGVyZm9ybWVyPgoJCQkJCTwhLS0g
+KFNOKSBSZWZlcmVuY2UgdG8gdGhlIFByYWN0aXRpb25lciByZXNvdXJzZSAtLT4KCQkJCQk8cmVm
+ZXJlbmNlIHZhbHVlPSJQcmFjdGl0aW9uZXIvb3JkZXJpbmctcHJvdmlkZXItMSIvPgoJCQkJPC9w
+ZXJmb3JtZXI+CgkJCQk8IS0tIChTTikgRGV0YWlscyBjb25jZXJuaW5nIGEgdGVzdCBvciBwcm9j
+ZWR1cmUgcmVxdWVzdGVkLiAtLT4KCQkJCTxyZXF1ZXN0PgoJCQkJCTwhLS0gKFNOKSBSZWZlcmVu
+Y2UgdG8gIERpYWdub3N0aWNPcmRlci9pZC9AdmFsdWUgLS0+CgkJCQkJPHJlZmVyZW5jZSB2YWx1
+ZT0iRGlhZ25vc3RpY09yZGVyL09CUi1vYnNlcnZhdGlvbi1yZXF1ZXN0LTIiLz4KCQkJCTwvcmVx
+dWVzdD4KCQkJPC9EaWFnbm9zdGljUmVwb3J0PgoJCTwvcmVzb3VyY2U+Cgk8L2VudHJ5PgkKCTxl
+bnRyeT48IS0tIERpYWdub3N0aWNPcmRlciAoT0JSKSAtLT4KCQk8cmVzb3VyY2U+CgkJCTwhLS0g
+T0JSIFtPYnNlcnZhdGlvbiBSZXF1ZXN0XSAtIFJlcXVpcmVkIC0tPgoJCQk8IS0tIChTTikgT25s
+eSBvbmUgT0JSIFtPYnNlcnZhdGlvbl0gcGVyIE9yZGVyIE9ic2VydmF0aW9uIGdyb3VwIChPUkMt
+T0JSLU9CWCkgLS0+CgkJCTwhLS0gKFNOKSBPQlIuMiBbUGxhY2VyIE9yZGVyIE51bWJlcl0gLSBS
+ZXF1cmllZCAtIHNlZSBEaWFnbm9zdGljUmVwb3J0L2lkZW50aWZpZXIgLS0+CgkJCTxEaWFnbm9z
+dGljT3JkZXI+CgkJCQk8IS0tIChTTikgVGhlIHZhbHVlIE1VU1QgYmUgaWRlbnRpY2FsIHRvIERp
+YWdub3N0aWNSZXBvcnQvcmVxdWVzdC9yZWZlcmVuY2UvQHZhbHVlIChha2EgT1JDKSB0aGlzIE9C
+UiBiZWxvbmdzIHRvIC0tPgoJCQkJPGlkIHZhbHVlPSJPQlItb2JzZXJ2YXRpb24tcmVxdWVzdC0x
+Ii8+CgkJCQk8IS0tIChTTikgSGFyZC1jb2RlZCwgcmVxdWlyZWQgYnkgRkhJUiAtLT4KCQkJCTxz
+dWJqZWN0IGlkPSJQYXRpZW50Ii8+CgkJCQk8ZXZlbnQ+CgkJCQkJPCEtLSAoU04pIEhhcmQtY29k
+ZWQsIHJlcXVpcmVkIGJ5IEZISVIgLS0+CgkJCQkJPHN0YXR1cyB2YWx1ZT0iY29tcGxldGVkIi8+
+CgkJCQkJPCEtLSBPQlIuNyBbT2JzZXJ2YXRpb24gRGF0ZS9UaW1lXSAtIFJlcXVpcmVkIC0tPgoJ
+CQkJCTwhLS0gKFNOKSBUaGUgc3BlY2ltZW4gY29sbGVjdGlvbiBkYXRlL3RpbWUgd2hlbiB0aGUg
+dGVzdCBpbnZvbHZlcyBhIHNwZWNpbWVuIC0tPgoJCQkJCTxkYXRlVGltZSB2YWx1ZT0iMjAxNi0x
+Mi0yMVQyMDo1MTo1NSswMDowMCIvPgoJCQkJCTxhY3Rvcj4KCQkJCQkJPHJlZmVyZW5jZSB2YWx1
+ZT0iUHJhY3RpdGlvbmVyL29yZGVyaW5nLXByb3ZpZGVyLTEiLz4KCQkJCQk8L2FjdG9yPgoJCQkJ
+PC9ldmVudD4KCQkJCTwhLS0gT0JSLjQgW1VuaXZlcnNhbCBTZXJ2aWNlIElkZW50aWZpZXJdIC0g
+UmVxdWlyZWQgLS0+CgkJCQk8IS0tIChTTikgSWRlbnRpZmljYXRpb24gY29kZSBmb3IgdGhlIG9y
+ZGVyZWQgdGVzdC4gT25lIG9yZGVyIGNvZGUgcGVyIE9CUiBzZWdtZW50IC0tPgoJCQkJPGl0ZW0+
+CgkJCQkJPGNvZGU+CgkJCQkJCTxjb2Rpbmc+CgkJCQkJCQk8IS0tIE9CUi40LjQgW0FsdGVybmF0
+ZSBJZGVudGlmaWVyXSAtIFJlcXVpcmVkIC0tPgoJCQkJCQkJPGNvZGUgdmFsdWU9Ijg2NiIvPgoJ
+CQkJCQkJPCEtLSBPQlIuNC41IFtBbHRlcm5hdGUgVGV4dF0gLSBSZXF1aXJlZCAtLT4KCQkJCQkJ
+CTxkaXNwbGF5IHZhbHVlPSJGcmVlIFQ0Ii8+CgkJCQkJCTwvY29kaW5nPgoJCQkJCTwvY29kZT4K
+CQkJCTwvaXRlbT4KCQkJPC9EaWFnbm9zdGljT3JkZXI+CgkJPC9yZXNvdXJjZT4KCTwvZW50cnk+
+Cgk8ZW50cnk+PCEtLSBEaWFnbm9zdGljT3JkZXIgKE9CUikgLS0+CgkJPHJlc291cmNlPgoJCQk8
+IS0tIE9CUiBbT2JzZXJ2YXRpb24gUmVxdWVzdF0gLSBSZXF1aXJlZCAtLT4KCQkJPCEtLSAoU04p
+IE9ubHkgb25lIE9CUiBbT2JzZXJ2YXRpb25dIHBlciBPcmRlciBPYnNlcnZhdGlvbiBncm91cCAo
+T1JDLU9CUi1PQlgpIC0tPgoJCQk8IS0tIChTTikgT0JSLjIgW1BsYWNlciBPcmRlciBOdW1iZXJd
+IC0gUmVxdXJpZWQgLSBzZWUgRGlhZ25vc3RpY1JlcG9ydC9pZGVudGlmaWVyIC0tPgoJCQk8RGlh
+Z25vc3RpY09yZGVyPgoJCQkJPCEtLSAoU04pIFRoZSB2YWx1ZSBNVVNUIGJlIGlkZW50aWNhbCB0
+byBEaWFnbm9zdGljUmVwb3J0L3JlcXVlc3QvcmVmZXJlbmNlL0B2YWx1ZSAoYWthIE9SQykgdGhp
+cyBPQlIgYmVsb25ncyB0byAtLT4KCQkJCTxpZCB2YWx1ZT0iT0JSLW9ic2VydmF0aW9uLXJlcXVl
+c3QtMiIvPgoJCQkJPCEtLSAoU04pIEhhcmQtY29kZWQsIHJlcXVpcmVkIGJ5IEZISVIgLS0+CgkJ
+CQk8c3ViamVjdCBpZD0iUGF0aWVudCIvPgoJCQkJPGV2ZW50PgoJCQkJCTwhLS0gKFNOKSBIYXJk
+LWNvZGVkLCByZXF1aXJlZCBieSBGSElSIC0tPgoJCQkJCTxzdGF0dXMgdmFsdWU9ImNvbXBsZXRl
+ZCIvPgoJCQkJCTwhLS0gT0JSLjcgW09ic2VydmF0aW9uIERhdGUvVGltZV0gLSBSZXF1aXJlZCAt
+LT4KCQkJCQk8IS0tIChTTikgVGhlIHNwZWNpbWVuIGNvbGxlY3Rpb24gZGF0ZS90aW1lIHdoZW4g
+dGhlIHRlc3QgaW52b2x2ZXMgYSBzcGVjaW1lbiAtLT4KCQkJCQk8ZGF0ZVRpbWUgdmFsdWU9IjIw
+MTYtMTItMjFUMjA6NDA6MDArMDA6MDAiLz4KCQkJCQk8YWN0b3I+CgkJCQkJCTxyZWZlcmVuY2Ug
+dmFsdWU9IlByYWN0aXRpb25lci9vcmRlcmluZy1wcm92aWRlci0xIi8+CgkJCQkJPC9hY3Rvcj4K
+CQkJCTwvZXZlbnQ+CgkJCQk8IS0tIE9CUi40IFtVbml2ZXJzYWwgU2VydmljZSBJZGVudGlmaWVy
+XSAtIFJlcXVpcmVkIC0tPgoJCQkJPCEtLSAoU04pIElkZW50aWZpY2F0aW9uIGNvZGUgZm9yIHRo
+ZSBvcmRlcmVkIHRlc3QuIE9uZSBvcmRlciBjb2RlIHBlciBPQlIgc2VnbWVudCAtLT4KCQkJCTxp
+dGVtPgoJCQkJCTxjb2RlPgoJCQkJCQk8Y29kaW5nPgoJCQkJCQkJPCEtLSBPQlIuNC40IFtBbHRl
+cm5hdGUgSWRlbnRpZmllcl0gLSBSZXF1aXJlZCAtLT4KCQkJCQkJCTxjb2RlIHZhbHVlPSI4OTki
+Lz4KCQkJCQkJCTwhLS0gT0JSLjQuNSBbQWx0ZXJuYXRlIFRleHRdIC0gUmVxdWlyZWQgLS0+CgkJ
+CQkJCQk8ZGlzcGxheSB2YWx1ZT0iVFNIIi8+CgkJCQkJCTwvY29kaW5nPgoJCQkJCTwvY29kZT4K
+CQkJCTwvaXRlbT4KCQkJPC9EaWFnbm9zdGljT3JkZXI+CgkJPC9yZXNvdXJjZT4KCTwvZW50cnk+
+CQoJPGVudHJ5PjwhLS0gQ292ZXJhZ2UgKElOMSkgLS0+CgkJPHJlc291cmNlPgoJCQk8IS0tIFRo
+ZSBJbnN1cmFuY2UgKElOMSkgc2VnbWVudCBjb250YWlucyBpbnN1cmFuY2UgcG9saWN5IGNvdmVy
+YWdlIGluZm9ybWF0aW9uIG5lY2Vzc2FyeSB0byBwcm9kdWNlIHByb3Blcmx5IHByby1yYXRlZCBh
+bmQgcGF0aWVudCBhbmQgaW5zdXJhbmNlIGJpbGxzLiAgLS0+CgkJCTxDb3ZlcmFnZT4KCQkJCTxp
+ZCB2YWx1ZT0iSU4xLWluc3VyYW5jZS0xIi8+CgkJCQk8Y29udGFpbmVkPgoJCQkJCTxPcmdhbml6
+YXRpb24+CgkJCQkJCTxpZCB2YWx1ZT0iaW5zdXJhbmNlLWNvbXBhbnkiLz4KCQkJCQkJPCEtLSBJ
+TjEuMyBbSW5zdXJhbmNlIENvbXBhbnkgSURdIC0gUmVxdWlyZWQgYnkgSEw3djIuNS4xIC0tPgoJ
+CQkJCQk8IS0tIChTTikgVGhpcyBpcyB0aGUgUURJIEJpbGwgbW5lbW9uaWMgLS0+CgkJCQkJCTxp
+ZGVudGlmaWVyPgoJCQkJCQkJPHZhbHVlIHZhbHVlPSJCVSIvPgoJCQkJCQk8L2lkZW50aWZpZXI+
+CgkJCQkJPC9Pcmdhbml6YXRpb24+CgkJCQk8L2NvbnRhaW5lZD4KCQkJCTxpc3N1ZXJSZWZlcmVu
+Y2U+CgkJCQkJPHJlZmVyZW5jZSB2YWx1ZT0iT3JnYW5pemF0aW9uL2luc3VyYW5jZS1jb21wYW55
+Ii8+CgkJCQk8L2lzc3VlclJlZmVyZW5jZT4KCQkJCTwhLS0gSU4xLjQ3IFtDb3ZlcmFnZSBUeXBl
+XSAtIFJlcXVpcmVkIC0tPgoJCQkJPHR5cGU+CgkJCQkJPCEtLSAoU04pIEZvbGxvd2luZyB2YWx1
+ZXMgYXJlIHBvc3NpYmxlOiBUIChUaGlyZC1wYXJ0eSBiaWxsKSwgUCAoUGF0aWVudCBiaWxsKSwg
+QyAoQ2xpZW50IGJpbGwpIC0tPgoJCQkJCTxjb2RlIHZhbHVlPSJQIi8+CgkJCQk8L3R5cGU+CgkJ
+CQk8IS0tIElOMS4xNiBbTmFtZSBPZiBJbnN1cmVkXSAtIENvbmRpdGlvbmFsIC0tPgoJCQkJPCEt
+LSAoU04pIFRoaXMgZmllbGQgaXMgcmVxdWlyZWQgaWYgSU4xLjQ3IChDb3ZlcmFnZSBUeXBlKSBp
+cyAiVCItLT4KCQkJCTwhLS0gKFNOKSBPbmx5IG9uZSBvZiB0aGUgZm9sbG93aW5nIHR3byByZWZl
+cmVuY2VzIGFyZSBhbGxvd2VkIC0tPgoJCQkJPHBsYW5ob2xkZXJSZWZlcmVuY2U+CgkJCQkJPCEt
+LSAoU04pIFVzZSB0aGlzIGhhcmRjb2RlZCB2YWx1ZSBvbmx5IGlmIElOMS4xNyBbSW5zdXJlZCdz
+IFJlbGF0aW9uc2hpcCBUbyBQYXRpZW50XSBpcyAiMSIgZm9yIFNlbGYgLS0+CgkJCQkJPHJlZmVy
+ZW5jZSB2YWx1ZT0iUGF0aWVudC9QSUQtcGF0aWVudC1pZGVudGlmaWNhdGlvbiIvPgoJCQkJCTwh
+LS0gKFNOKSBVc2UgdGhpcyBoYXJkY29kZWQgdmFsdWUgb25seSBpZiBJTjEuMTcgW0luc3VyZWQn
+cyBSZWxhdGlvbnNoaXAgVG8gUGF0aWVudF0gaXMgIjIiIGZvciBTcG91c2Ugb3IgIjgiIGZvciBE
+ZXBlbmRlbnQgLS0+CgkJCQkJPCEtLSA8cmVmZXJlbmNlIHZhbHVlPSJQZXJzb24vaW5zdXJlZC1w
+ZXJzb24iLz4gLS0+CgkJCQk8L3BsYW5ob2xkZXJSZWZlcmVuY2U+CgkJCQk8YmVuZWZpY2lhcnlJ
+ZGVudGlmaWVyLz4KCQkJCTwhLS0gSU4xLjE3IFtJbnN1cmVk77+9cyBSZWxhdGlvbnNoaXAgVG8g
+UGF0aWVudF0gLSBDb25kaXRpb25hbCAtLT4KCQkJCTwhLS0gKFNOKSBUaGlzIGZpZWxkIGlzIHJl
+cXVpcmVkIGlmIElOMS40NyAoQ292ZXJhZ2UgVHlwZSkgaXMgIlQiIC0tPgoJCQkJPHJlbGF0aW9u
+c2hpcD4KCQkJCQk8IS0tIChTTikgQWxsb3dlZCB2YWx1ZXM6IDEgPSBTZWxmLCAyID0gU3BvdXNl
+LCA4ID0gRGVwZW5kZW50IC0tPgoJCQkJCTwhLS0gKFNOKSBUaGUgdmFsdWUgc2V0IGlzIGludGVu
+dGlvbmFsbHkgZGlmZmVyZW50IHRoYW4gLSBodHRwczovL3d3dy5obDcub3JnL2ZoaXIvMjAxNlNl
+cC92YWx1ZXNldC1wb2xpY3lob2xkZXItcmVsYXRpb25zaGlwLmh0bWwgLS0+CgkJCQkJPGNvZGUg
+dmFsdWU9IjEiLz4KCQkJCQk8ZGlzcGxheSB2YWx1ZT0iU2VsZiIvPgoJCQkJPC9yZWxhdGlvbnNo
+aXA+CgkJCQk8IS0tIElOMS4yIFtJbnN1cmFuY2UgUGxhbiBJRF0gLSBOb3QgVXNlZCAtLT4KCQkJ
+CTwhLS0gKFNOKSBUaGlzIGZpZWxkIGlzIHJlcXVpcmVkIGJ5IEhMN3YyLjUuMSBJTjEgc3BlY2lm
+aWNhdGlvbiBidXQgbm90IHVzZWQgYnkgUXVlc3QgLS0+CgkJCQk8aWRlbnRpZmllcj4KCQkJCQk8
+dmFsdWUgdmFsdWU9IlBsYW5JRDEyMzQiLz4KCQkJCTwvaWRlbnRpZmllcj4JCQkJCgkJCTwvQ292
+ZXJhZ2U+CgkJPC9yZXNvdXJjZT4KCTwvZW50cnk+Cgk8ZW50cnk+PCEtLSBQcmFjdGl0aW9uZXIg
+KE9CUi4xNi1PcmRlcmluZyBQcm92aWRlcikgLS0+CgkJPHJlc291cmNlPgoJCQk8IS0tIE9CUi4x
+NiBbT3JkZXJpbmcgUHJvdmlkZXJdIC0gUmVxdWlyZWQgLSBJZGVudGlmaWVzIHRoZSBwcm92aWRl
+ciB3aG8gb3JkZXJlZCB0aGUgdGVzdC0tPgoJCQk8UHJhY3RpdGlvbmVyPgoJCQkJPGlkIHZhbHVl
+PSJvcmRlcmluZy1wcm92aWRlci0xIi8+CgkJCQk8aWRlbnRpZmllcj4KCQkJCQk8IS0tIE9CUjE2
+LjEgW0lEIE51bWJlcl0gLSBSZXF1aXJlZCAtLT4KCQkJCQk8dmFsdWUgdmFsdWU9IjEzNjY0NzI1
+NTciLz4KCQkJCQk8YXNzaWduZXI+CgkJCQkJCTwhLS0gMTYuOSBbQXNzaWduaW5nIEF1dGhvcml0
+eV0gLSBSZXF1aXJlZCAtLT4KCQkJCQkJPCEtLSAoU04pIFRoaXMgcHJvYmFibHkgaGFyZC1jb2Rl
+ZCB0byBOUEksIHRoZXJlZm9yZSBzaW1wbGlmaWVkIGZvciBub3csIG90aGVyd2lzZSBzaG91bGQg
+YmUgcmVwbGFjZWQgd2l0aCBhIHJlZmVyZW5jZSB0byBhbiBvcmduaXphdGlvbiAtLT4KCQkJCQkJ
+PGRpc3BsYXkgdmFsdWU9Ik5QSSIvPgoJCQkJCTwvYXNzaWduZXI+CgkJCQk8L2lkZW50aWZpZXI+
+CgkJCQk8bmFtZT4KCQkJCQk8IS0tIE9CUi4xNi4yIFtGYW1pbHkgTmFtZV0gLSBSZXF1aXJlZCAt
+LT4KCQkJCQk8ZmFtaWx5IHZhbHVlPSJKYXZpbGxvIi8+CgkJCQkJPCEtLSBPQlIuMTYuMyBbR2l2
+ZW4gTmFtZV0gLSBSZXF1aXJlZCAtLT4KCQkJCQk8Z2l2ZW4gdmFsdWU9Ikphc29uIi8+CgkJCQk8
+L25hbWU+CgkJCTwvUHJhY3RpdGlvbmVyPgoJCTwvcmVzb3VyY2U+Cgk8L2VudHJ5PgoJPGVudHJ5
+PjwhLS0gUGVyc29uIChHVDEpIC0gT3B0aW9uYWwgYnV0IHJlcXVpcmVkIGZvciBSZXF1aXNpdGlv
+biAjMSAtLT4KCQk8cmVzb3VyY2U+CgkJCTwhLS0gKFNOKSBUaGlzIHJlc291cmNlIGlzIHJlcXVp
+cmVkIG9ubHkgaWYgSU4xLjQ3IChDb3ZlcmFnZSBUeXBlKSBpcyAiVCIsIG90aGVyd2lzZSBHdWFy
+YW50b3IgaXMgT3B0aW9uYWwgLS0+CgkJCTwhLS0gKFNOKSBJZiBwcmVzZW50LCBvbmx5IG9uZSBH
+VDEgc2VnbWVudCBpbiB0aGUgT01MIG1lc3NhZ2UgaXMgYWxsb3dlZCAtLT4KCQkJPFBlcnNvbj4K
+CQkJCTxpZCB2YWx1ZT0iR1QxLWd1YXJhbnRvciIvPgoJCQkJPCEtLSBHVDEuMyBbR3VhcmFudG9y
+IE5hbWVdIC0gUmVxdWlyZWQgLS0+CgkJCQk8IS0tIChTTikgR3VhcmFudG9yIE5hbWUgaXMgcmVx
+dWlyZWQgaWYgSU4xLjQ3IFtDb3ZlcmFnZSBUeXBlXSBpcyAiUCIgb3IgIlQiLiAgLS0+CgkJCQk8
+bmFtZT4KCQkJCQk8IS0tIChTTikgInVzZSIgZWxlbWVudCBpcyBoYXJkY29kZWQgZm9yIHByaW1h
+cnkgcGF0aWVudCBuYW1lIC0tPgoJCQkJCTx1c2UgdmFsdWU9Im9mZmljaWFsIi8+CgkJCQkJPCEt
+LSBHVDEuMy4xIFtGYW1pbHkgTmFtZV0gLS0+CgkJCQkJPCEtLSAoU04pIFRoZSBsYXN0IG5hbWUg
+Y2FuIGJlIGEgbWF4aW11bSBvZiAyMCBjaGFyYWN0ZXJzLiBBbnkgbGFzdCBuYW1lIGxvbmdlciB0
+aGFuIHRoZSBhbGxvd2VkIGxpbWl0IGlzIHRydW5jYXRlZCBpbiB0aGUgY29ycmVzcG9uZGluZyBy
+ZXN1bHQgbWVzc2FnZS4gLS0+CgkJCQkJPGZhbWlseSB2YWx1ZT0iVEVTVCIvPgoJCQkJCTwhLS0g
+R1QxLjMuMiBbR2l2ZW4gTmFtZV0gLS0+CgkJCQkJPCEtLSAoU04pIFRoZSBmaXJzdCBuYW1lIGlz
+IGxpbWl0ZWQgdG8gdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiB0aGUgbnVtYmVyIG9mIGNoYXJhY3Rl
+cnMgaW4gdGhlIGxhc3QgbmFtZSBhbmQgMjQuIC0tPgoJCQkJCTxnaXZlbiB2YWx1ZT0iVEMxIi8+
+CgkJCQk8L25hbWU+CgkJCQk8IS0tIEdUMS42IFtHdWFyYW50b3IgUGhvbmUgTnVtYmVyIC0gSG9t
+ZV0gLSBDb25kaXRpb25hbCAtLT4KCQkJCTwhLS0gKFNOKSBUaGlzIGZpZWxkIGlzIHJlcXVpcmVk
+IGlmIElOMS40NyBbQ292ZXJhZ2UgVHlwZV0gaXMgIlAiIG9yICJUIiAtLT4KCQkJCTx0ZWxlY29t
+PgoJCQkJCTxzeXN0ZW0gdmFsdWU9InBob25lIi8+CgkJCQkJPHZhbHVlIHZhbHVlPSI5NzItOTE2
+LTMwMDAiLz4KCQkJCQk8dXNlIHZhbHVlPSJob21lIi8+CgkJCQk8L3RlbGVjb20+CgkJCQk8IS0t
+IEdUMS41IFtHdWFyYW50b3IgQWRkcmVzc10gLSBDb25kaXRpb25hbCAtLT4KCQkJCTwhLS0gKFNO
+KSBUaGlzIGZpZWxkIGlzIHJlcXVpcmVkIGlmIElOMS40NyBbQ292ZXJhZ2UgVHlwZV0gaXMgIlAi
+IG9yICJUIiAtLT4KCQkJCTxhZGRyZXNzPgoJCQkJCTx1c2UgdmFsdWU9ImhvbWUiLz4KCQkJCQk8
+bGluZSB2YWx1ZT0iNDc3MCBSZWdlbnQgQmx2ZC4iLz4KCQkJCQk8Y2l0eSB2YWx1ZT0iSXJ2aW5n
+Ii8+CgkJCQkJPHN0YXRlIHZhbHVlPSJUWCIvPgoJCQkJCTxwb3N0YWxDb2RlIHZhbHVlPSI3NTA2
+MyIvPgoJCQkJPC9hZGRyZXNzPgoJCQk8L1BlcnNvbj4KCQk8L3Jlc291cmNlPgoJPC9lbnRyeT4J
+CQo8L0J1bmRsZT4K</inboundTemplate>
+      <outboundTemplate encoding="base64"></outboundTemplate>
+      <inboundDataType>XML</inboundDataType>
+      <outboundDataType>XML</outboundDataType>
+      <inboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+        <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+          <stripNamespaces>true</stripNamespaces>
+        </serializationProperties>
+        <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+          <splitType>Element_Name</splitType>
+          <elementName></elementName>
+          <level>1</level>
+          <query></query>
+          <batchScript></batchScript>
+        </batchProperties>
+      </inboundProperties>
+      <outboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+        <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+          <stripNamespaces>true</stripNamespaces>
+        </serializationProperties>
+        <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+          <splitType>Element_Name</splitType>
+          <elementName></elementName>
+          <level>1</level>
+          <query></query>
+          <batchScript></batchScript>
+        </batchProperties>
+      </outboundProperties>
+    </transformer>
+    <filter version="3.4.2">
+      <rules/>
+    </filter>
+    <transportName>FHIR Listener</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <waitForPrevious>true</waitForPrevious>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector version="3.4.2">
+      <metaDataId>1</metaDataId>
+      <name>SubmitOrder Quest</name>
+      <properties class="com.mirth.connect.connectors.vm.VmDispatcherProperties" version="3.4.2">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.4.2">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="linked-hash-map">
+            <entry>
+              <string>Default Resource</string>
+              <string>[Default Resource]</string>
+            </entry>
+          </resourceIds>
+          <queueBufferSize>1000</queueBufferSize>
+        </destinationConnectorProperties>
+        <channelId>4c7bc0bd-aede-4e90-9ce8-cde50750f1e8</channelId>
+        <channelTemplate>${json}</channelTemplate>
+        <mapVariables/>
+      </properties>
+      <transformer version="3.4.2">
+        <steps>
+          <step>
+            <sequenceNumber>0</sequenceNumber>
+            <name>Convert XML to JSON</name>
+            <script>try {
+	
+	var jsonFeed = Packages.org.json.XML.toJSONObject(msg.toString());
+	channelMap.put(&quot;json&quot;, jsonFeed.toString());
+	
+} catch(ex) {
+	logger.error(&quot;Gateway: SubmitOrder destination - &quot; + ex);
+	throw (&quot;Gateway: SubmitOrder destination - &quot; + ex);
+}</script>
+            <type>JavaScript</type>
+            <data>
+              <entry>
+                <string>Script</string>
+                <string>try {
+	
+	var jsonFeed = Packages.org.json.XML.toJSONObject(msg.toString());
+	channelMap.put(&quot;json&quot;, jsonFeed.toString());
+	
+} catch(ex) {
+	logger.error(&quot;Gateway: SubmitOrder destination - &quot; + ex);
+	throw (&quot;Gateway: SubmitOrder destination - &quot; + ex);
+}</string>
+              </entry>
+            </data>
+          </step>
+        </steps>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>XML</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+            <stripNamespaces>true</stripNamespaces>
+          </serializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+            <splitType>Element_Name</splitType>
+            <elementName></elementName>
+            <level>1</level>
+            <query></query>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.4.2">
+        <steps>
+          <step>
+            <sequenceNumber>0</sequenceNumber>
+            <name>Convert JSON to XML</name>
+            <script>responseMap.put(&quot;OperationOutcome&quot;, msg.toString());</script>
+            <type>JavaScript</type>
+            <data>
+              <entry>
+                <string>Script</string>
+                <string>responseMap.put(&quot;OperationOutcome&quot;, msg.toString());</string>
+              </entry>
+            </data>
+          </step>
+        </steps>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>XML</inboundDataType>
+        <outboundDataType>XML</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+            <stripNamespaces>true</stripNamespaces>
+          </serializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+            <splitType>Element_Name</splitType>
+            <elementName></elementName>
+            <level>1</level>
+            <query></query>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+            <stripNamespaces>true</stripNamespaces>
+          </serializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+            <splitType>Element_Name</splitType>
+            <elementName></elementName>
+            <level>1</level>
+            <query></query>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.4.2">
+        <rules/>
+      </filter>
+      <transportName>Channel Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+    <connector version="3.4.2">
+      <metaDataId>2</metaDataId>
+      <name>SubmitOrder LabCorp</name>
+      <properties class="com.mirth.connect.connectors.vm.VmDispatcherProperties" version="3.4.2">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.4.2">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="linked-hash-map">
+            <entry>
+              <string>Default Resource</string>
+              <string>[Default Resource]</string>
+            </entry>
+          </resourceIds>
+          <queueBufferSize>1000</queueBufferSize>
+        </destinationConnectorProperties>
+        <channelId>none</channelId>
+        <channelTemplate>${message.encodedData}</channelTemplate>
+        <mapVariables/>
+      </properties>
+      <transformer version="3.4.2">
+        <steps>
+          <step>
+            <sequenceNumber>0</sequenceNumber>
+            <name>Convert feed</name>
+            <script>// TODO: Route incoming feed to LabCorp SubmitOrder</script>
+            <type>JavaScript</type>
+            <data>
+              <entry>
+                <string>Script</string>
+                <string>// TODO: Route incoming feed to LabCorp SubmitOrder</string>
+              </entry>
+            </data>
+          </step>
+        </steps>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>XML</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+            <stripNamespaces>true</stripNamespaces>
+          </serializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+            <splitType>Element_Name</splitType>
+            <elementName></elementName>
+            <level>1</level>
+            <query></query>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.4.2">
+        <steps/>
+        <inboundDataType>XML</inboundDataType>
+        <outboundDataType>XML</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+            <stripNamespaces>true</stripNamespaces>
+          </serializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+            <splitType>Element_Name</splitType>
+            <elementName></elementName>
+            <level>1</level>
+            <query></query>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+            <stripNamespaces>true</stripNamespaces>
+          </serializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+            <splitType>Element_Name</splitType>
+            <elementName></elementName>
+            <level>1</level>
+            <query></query>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.4.2">
+        <rules/>
+      </filter>
+      <transportName>Channel Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>false</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+  </destinationConnectors>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+// Responses returned from here will be stored as &quot;Postprocessor&quot; in the response map
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <undeployScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</undeployScript>
+  <properties version="3.4.2">
+    <clearGlobalChannelMap>true</clearGlobalChannelMap>
+    <messageStorageMode>DEVELOPMENT</messageStorageMode>
+    <encryptData>false</encryptData>
+    <removeContentOnCompletion>false</removeContentOnCompletion>
+    <removeOnlyFilteredOnCompletion>false</removeOnlyFilteredOnCompletion>
+    <removeAttachmentsOnCompletion>false</removeAttachmentsOnCompletion>
+    <initialState>STARTED</initialState>
+    <storeAttachments>false</storeAttachments>
+    <tags class="linked-hash-set"/>
+    <metaDataColumns>
+      <metaDataColumn>
+        <name>SOURCE</name>
+        <type>STRING</type>
+        <mappingName>mirth_source</mappingName>
+      </metaDataColumn>
+      <metaDataColumn>
+        <name>TYPE</name>
+        <type>STRING</type>
+        <mappingName>mirth_type</mappingName>
+      </metaDataColumn>
+    </metaDataColumns>
+    <attachmentProperties version="3.4.2">
+      <type>None</type>
+      <properties/>
+    </attachmentProperties>
+    <archiveEnabled>true</archiveEnabled>
+    <resourceIds class="linked-hash-map">
+      <entry>
+        <string>Default Resource</string>
+        <string>[Default Resource]</string>
+      </entry>
+    </resourceIds>
+  </properties>
+  <codeTemplateLibraries>
+    <codeTemplateLibrary version="3.4.2">
+      <id>aa9b2404-fbde-4bbe-851f-a0a19ca6ae36</id>
+      <name>DEX Library</name>
+      <revision>5</revision>
+      <lastModified>
+        <time>1493415645281</time>
+        <timezone>UTC</timezone>
+      </lastModified>
+      <description>Last updated: March 25, 2017</description>
+      <includeNewChannels>true</includeNewChannels>
+      <enabledChannelIds>
+        <string>b73a73d9-b589-4dd7-8a5b-d24fe9ed522d</string>
+        <string>afa52ba3-bd0a-4634-8ae5-b9c91c4dc3b9</string>
+        <string>9eeed45d-4613-4501-86f1-236e91808742</string>
+        <string>4c7bc0bd-aede-4e90-9ce8-cde50750f1e8</string>
+        <string>041540bc-16e7-43fe-a9eb-1ca3c5ea17db</string>
+        <string>ae149084-1aaa-4867-a7e3-b66860874f05</string>
+        <string>829fe0c9-9229-4cb3-9cc3-1250213f284f</string>
+        <string>e0f422e1-0550-40f1-8a37-e148e0b5f636</string>
+      </enabledChannelIds>
+      <disabledChannelIds>
+        <string>f24a2bfd-8f45-4170-b6d6-6410f426ec66</string>
+      </disabledChannelIds>
+      <codeTemplates>
+        <codeTemplate version="3.4.2">
+          <id>5e2f9cc3-3b23-4967-9fd1-6a9c602dd29e</id>
+          <name>Convert FHIR to HL7v2 code</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077779</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts FHIR code to HL7v2 code as defined by the conversion table according to the HL7v2 specification
+
+	@param {String} table - HL7v2 Table code as per specification
+	@param {String] value - value to convert
+	@return {String} return code according to conversion table
+*/
+function convertTable(table, value) {
+
+	switch(table) {
+		
+		// Table 0001 - Administrative Sex
+		case &quot;0001&quot;:
+			if (value.toString() == &quot;male&quot;) return &quot;M&quot;
+			else if (value.toString() == &quot;female&quot;) return &quot;F&quot;
+			else if (value.toString() == &quot;other&quot;) return &quot;O&quot;
+			else return &quot;U&quot;;
+			break;
+	}
+
+	return &quot;&quot;;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>025ece06-d4ad-47d7-8047-67acaf3072a5</id>
+          <name>Convert HL7 Date Time</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077689</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts date, time and time zone from HL7v2 to ISO 8601 (JSON) format.
+	Possible input string format: yyyymmddhhmm[ss[.s[s[s[s]]]]][+/-zzzz]
+
+	@param {String} date - datetime to be converted
+	@return {String} return JSON representation of the datetime
+*/
+function convertHL7DateTime(datetime) {
+
+/*
+	Format: yyyymmddhhmm[ss[.s[s[s[s]]]]][+/-zzzz]
+	The date and time elements are populated as follows:
+	yyyy = Required
+	mm = Required if yyyy is not 0000.
+	dd = Required if yyyy is not 0000.
+	hh = Required if yyyy is not 0000.
+	mm = Required if yyyy is not 0000.
+	[ss[.s[s[s[s]]]]] = Conditional. Optional if yyyy is not 0000.
+	[+/-zzzz] = Optional
+*/
+
+
+	if (datetime == null || datetime.length == 0 || typeof datetime === &quot;undefined&quot;) return &quot;&quot;;
+
+	try {
+		var strDateTime = new Packages.java.lang.StringBuffer(datetime.toString());
+	
+		// Extract time zone
+		var index;
+		var symbol;
+		var timeZone;
+		
+		if (strDateTime.indexOf(&quot;-&quot;) &gt; 0) {
+			index = strDateTime.indexOf(&quot;-&quot;);
+		} else if (strDateTime.indexOf(&quot;+&quot;) &gt; 0) {
+			index = strDateTime.indexOf(&quot;+&quot;);
+		} else
+			index = -1;
+	
+		if (index &gt; 0) {		
+			symbol = strDateTime.substring(index, index+1);
+			timeZone = new Packages.java.lang.StringBuffer(strDateTime.substring(index+1));
+			if (timeZone.length() &gt; 2)
+				timeZone.insert(2,&quot;:&quot;);
+			strDateTime.delete(index, strDateTime.length());		
+		} else {
+			symbol = &quot;&quot;;
+			timeZone = &quot;&quot;;
+		}
+	
+		// Extract decimal fraction of a second
+		var fraction = strDateTime.indexOf(&quot;.&quot;);
+		var milliseconds;
+		if (fraction &gt; 0) {
+			milliseconds = strDateTime.substring(fraction, strDateTime.length());
+			strDateTime.delete(fraction, strDateTime.length());
+		} else {
+			milliseconds = &quot;&quot;;
+		}
+	
+		// Convert the main part
+		var jsonDateTime = new Packages.java.lang.StringBuffer(strDateTime);
+		
+		// yyyyMMdd
+		if (strDateTime.length() &gt;= &quot;yyyyMMdd&quot;.length) {
+			jsonDateTime.insert(4,&quot;-&quot;);
+			jsonDateTime.insert(7,&quot;-&quot;);
+		}
+	
+		// yyyyMMddhh
+		if (strDateTime.length() &gt;= &quot;yyyyMMddhh&quot;.length) {
+			jsonDateTime.insert(10,&quot;T&quot;);
+		}
+	
+		// yyyyMMddhhmm
+		if (strDateTime.length() &gt;= &quot;yyyyMMddhhmm&quot;.length) {
+			jsonDateTime.insert(13,&quot;:&quot;);
+			
+		}
+		
+		// yyyymmddhhmmss
+		if (strDateTime.length() &gt;= &quot;yyyymmddhhmmss&quot;.length) {
+			jsonDateTime.insert(16,&quot;:&quot;);		
+		}
+	
+	} catch(ex) {
+		jsonDateTime = &quot;0000-00-00&quot;
+		milliseconds = &quot;&quot;;
+		symbol = &quot;&quot;;
+		timeZone = &quot;&quot;;
+		logger.error(&quot;convertHL7DateTime(&quot; + datetime + &quot;) exception: &quot; + ex);	
+	} finally {
+		return jsonDateTime.toString() + milliseconds.toString() + symbol.toString() + timeZone.toString();
+	}
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>3d9a32c6-2d37-49d2-afe4-e309356085b7</id>
+          <name>Convert JSON Date Time</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078075</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts date, time and time zone from ISO 8601 (JSON) to HL7v2 format.
+	Possible input string format: yyyy-mm-ddThh:mm:ss.nnnnnn+|-hh:mm
+
+	@param {String} date - datetime to be converted
+	@return {String} return HL7v2 representation of the datetime
+*/
+function convertJSONDateTime(datetime) {
+
+/*
+	Format: yyyy-mm-dd[Thh:mm[:ss[.nnnnnn[+|-hh:mm]]]]
+*/
+
+	var date;
+	var time;
+	
+	var arrDateTime = datetime.split(&quot;T&quot;);
+	
+	if (arrDateTime.length == 1) {
+		date = arrDateTime[0];
+		time = &quot;&quot;;
+	} else if (arrDateTime.length == 2) {
+		date = arrDateTime[0];
+		time = arrDateTime[1];
+	} else 
+		return &quot;&quot;;
+
+	date = date.replace(/\-/g, &quot;&quot;);
+	time = time.replace(/\:/g, &quot;&quot;);
+
+	return date + time;
+
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>a758235b-06a9-4c9d-8256-e9cd70d38bb1</id>
+          <name>Convert Phone</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077936</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Inserts hyphens into the phone number if it is 7 digits in length
+
+	@param {String} phone - initial string to convert
+	@return {String} return phone number
+*/
+function convertPhone(phone) {
+
+	try {
+		var strPhone = new Packages.java.lang.StringBuffer(phone.toString());	
+		
+		if (strPhone.length() == 7) {			
+			strPhone.insert(3,&quot;-&quot;);
+			strPhone.insert(6,&quot;-&quot;);
+			return strPhone.toString();			
+		} else 
+			return phone.toString();
+		
+	} catch(ex) {
+		return phone.toString();		
+	} 
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>dc6049ce-02d8-4022-b10e-6bc9978ab3bd</id>
+          <name>Convert XML to JSON</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077867</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts a string in XML format into its JSON representation.
+	This function requires org.json.jar to be deployed to the /custom-lib folder on Mirth
+
+	@param {String} input - A string in XML format
+	@return {String} return a string representing initial XML feed but in JSON format
+*/
+function convertXMLtoJSON(input) {
+	var strJSON = Packages.org.json.XML.toJSONObject(input.toString());
+	return strJSON.toString(2);	
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>2f174050-3927-4c30-a984-26c98e29bd61</id>
+          <name>Converts Administrative Gender</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078148</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Verifies and converts HL7v2 administrative gender value to FHIR value set defined by
+	http://hl7.org/fhir/administrative-gender
+	
+	@param {String} code - HL7v2 PID.8 [Administrative Sex] code
+	@return {String} return FHIR value set code
+*/
+function getGenderValue(code) {
+
+	var gender;
+
+	switch(code) {
+		case &quot;M&quot;:
+			gender = &quot;male&quot;;
+			break;
+		case &quot;F&quot;:
+			gender = &quot;female&quot;;
+		 	break;
+		case &quot;O&quot;:
+		case &quot;A&quot;:
+		case &quot;N&quot;:
+			gender = &quot;other&quot;;
+			break; 	
+		default:
+			gender = &quot;unknown&quot;;		 	
+	}
+
+	return gender;	
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>943f9793-83e0-403a-84e9-40ea3fcd92d6</id>
+          <name>Converts Phone string to XTN</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078031</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts phone number string with caret dividers into XTN data type.
+	Supported formats: 1-314-8727127 or 314-8727127
+	Returned formats: ^^PH^^1^314^8727127 or ^^PH^^^314^8727127 or ^^PH^^^^8727127
+
+	@param {String} phone - Phone string in one of the supported format
+	@return {String} return Phone string as per XTN data type
+*/
+function convertPhoneXTN(phone) {
+
+	phone = phone.replace(/\+/g,&quot;&quot;);
+
+	// XTN data type example: ^^PH^^^734^6777777
+
+	//	    916-3000		\d{3}-\d{4}			^^PH^^^^9163000
+	//	    9163000		\d{7}				^^PH^^^^9163000
+	//   972-9163000		\d{3}-\d{7}			^^PH^^^972^9163000
+	//   972-916-3000  		\d{3}-\d{3}-\d{4}		^^PH^^^972^9163000
+	// 1-972-9163000 		\d{1}-\d{3}-\d{7}		^^PH^^1^972^9163000
+	// 1-972-916-3000 		\d{1}-\d{3}-\d{3}-\d{4}	^^PH^^1^972^9163000
+
+	var arrPhone = phone.split(&quot;-&quot;);
+	if (arrPhone.length &lt;= 1) return &quot;^^^^^^^^&quot; + phone;
+
+	// 1-972-9163000
+	if (phone.match(/\d{1}-\d{3}-\d{7}/) != null) {
+		// ^^PH^^1^734^6777777
+		return &quot;^^PH^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1] + &quot;^&quot; + arrPhone[2];
+
+	// 1-972-916-3000	
+	} else if (phone.match(/\d{1}-\d{3}-\d{3}-\d{4}/) != null) {
+		// ^^PH^^1^734^6777777
+		return &quot;^^PH^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1] + &quot;^&quot; + arrPhone[2] + arrPhone[3];
+
+	// 972-9163000	
+	} else if (phone.match(/\d{3}-\d{7}/) != null) {
+		// ^^PH^^^734^6777777
+		return &quot;^^PH^^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1];
+
+	// 972-916-3000
+	} else if (phone.match(/\d{3}-\d{3}-\d{4}/) != null) {
+		// ^^PH^^^972^9163000
+		return &quot;^^PH^^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1] + arrPhone[2];
+
+	// 9163000
+	} else if (phone.match(/\d{7}/) != null) {
+		// ^^PH^^^^9163000
+		return &quot;^^PH^^^^&quot; + arrPhone[0];
+
+	// 916-3000
+	} else if (phone.match(/\d{3}-\d{4}/) != null) {
+		// ^^PH^^^^9163000
+		return &quot;^^PH^^^^&quot; + arrPhone[0] + arrPhone[1];
+		
+	} else
+		return &quot;^^^^^^^^&quot; + phone; 
+
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>58a19daa-aada-46ac-ae7f-2b5e5848405b</id>
+          <name>Create OperationOutcome resource</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077663</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Creates OperationOutcome resource to inform about validation errors
+	
+	@param {Array} error - A list of errors or comments
+	@param {Object} issue - An object with severity, code and details associated with outcome
+	@param {Object} messages - An object with inbounb and outbound messages to be logged
+	@param {String} uuid - A string with uuid to pair request and response FHIR feeds	
+	@param {String} format - A resource output format (xml | json)	
+	@return {String} outcome - OperationOutcome resource in required format
+*/
+function getOperationOutcome(error, issue, messages, uuid, format) {
+
+	// Expected issue object format:
+	// var issue = {severity: &quot;&quot;, code: &quot;&quot;, details: &quot;&quot;};
+
+	// Expected messages object format:
+	// var messages = {request: &quot;&quot;, resp: &quot;&quot;};
+
+	// Namespaces are required to validate against FHIR XML Schema
+	if (format.toUpperCase() != &quot;JSON&quot;) 
+		default xml namespace = &quot;http://hl7.org/fhir&quot;;
+		
+	var outcome = &lt;OperationOutcome&gt;
+				&lt;id value=&quot;responsestatus&quot;/&gt;
+				&lt;extension url=&quot;request&quot;&gt;
+					&lt;valueBase64Binary value=&quot;&quot;/&gt;
+				&lt;/extension&gt;
+				&lt;extension url=&quot;response&quot;&gt;
+					&lt;valueBase64Binary value=&quot;&quot;/&gt;
+				&lt;/extension&gt;
+				&lt;issue&gt;
+					&lt;severity value=&quot;&quot;/&gt;
+					&lt;code value=&quot;&quot;/&gt;
+					&lt;details&gt;
+						&lt;text value=&quot;&quot;/&gt;
+					&lt;/details&gt;
+				&lt;/issue&gt;
+			&lt;/OperationOutcome&gt;;
+
+	if (uuid != null &amp;&amp; uuid != undefined &amp;&amp; uuid.toString() != &quot;&quot;) 
+		outcome.id.@value = &quot;responsestatus&quot; + uuid;
+		
+	outcome.issue.severity.@value = issue.severity;
+	outcome.issue.code.@value = issue.code;
+	outcome.issue.details.text.@value = issue.details;
+
+	// xhtml namespace is intentionally removed
+	var text = &lt;text&gt;
+			    	&lt;status value=&quot;generated&quot;/&gt;
+			    	&lt;div/&gt;
+			  &lt;/text&gt;;
+
+	text.div.* = new XMLList();
+	error.forEach(function(n){
+	  text.div.* += new XML(&quot;&lt;p&gt;&quot; + n +&quot;&lt;/p&gt;&quot;);
+	});
+
+	outcome.id += text;
+
+	// If request or response messages are available, encode them
+	if (messages.request != undefined &amp;&amp; messages.request.toString() != &quot;&quot;) 
+		outcome.extension.(@url == &quot;request&quot;)[0].valueBase64Binary.@value = getBase64Encoded(messages.request.toString());	
+	else
+		delete outcome.extension.(@url == &quot;request&quot;)[0];
+
+
+	if (messages.resp != undefined &amp;&amp; messages.resp.toString() != &quot;&quot;) 	
+		outcome.extension.(@url == &quot;response&quot;)[0].valueBase64Binary.@value = getBase64Encoded(messages.resp.toString());
+	else
+		delete outcome.extension.(@url == &quot;response&quot;)[0];
+
+	// Convert to a requested format
+	if (format.toUpperCase() == &quot;JSON&quot;) {
+		return convertXMLtoJSON(outcome.toString());		
+	} else {
+		// Namespace is required to validate FHIR XML
+		outcome = outcome.toString().replace(&apos;&lt;div&gt;&apos;, &apos;&lt;div  xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&apos;);
+		return outcome.toString();
+	}
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>52360391-d3f2-4714-8bd3-98c53c85c387</id>
+          <name>Fix HL7v2 node order</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077814</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Returns a new E4X node where the order of all siblings and descendants have been fixed as per the Mirth HL7 dot notation convention.
+	@param {String} node - The node to be fixed
+	@return {String} return - E4X node
+*/
+/*
+	Author: Nick Rupley
+	Date Modified: 4/18/2012
+*/
+function fixHL7NodeOrder(node) {
+	// Create output node
+	var newNode = new XML();
+	// In case the node is an XMLList of multiple siblings, loop through each sibling
+	for each (sibling in node) {
+		// Create new sibling node
+		var newSibling = new XML(&apos;&lt;&apos;+sibling.name().toString()+&apos;/&gt;&apos;);
+		// Iterate through each child node
+		for each (child in sibling.children())
+			// If the child has its own children, then recursively fix the node order of the child
+			if (child.hasComplexContent())
+				newSibling.appendChild(fixHL7NodeOrder(child));
+			// If the child doesn&apos;t have its own children, then just add the child to the new sibling node
+			else
+				newSibling.appendChild(child);
+		// After recursively fixing all of the child nodes, now we&apos;ll fix the current node
+		newNode += sortHL7Node(newSibling);
+	}
+	// Return the fixed node
+	return newNode;
+}
+
+// Helper function for fixHL7NodeOrder
+function sortHL7Node(node) {
+	// If the node has no children, then there&apos;s nothing to sort
+	if (node.hasSimpleContent())
+		return node;
+	// Create new output node
+	var newNode = new XML(&apos;&lt;&apos;+node.name().toString()+&apos;/&gt;&apos;);
+	// Iterate through each child in the node
+	for each (child in node.children()) {
+		// If the child has a QName, then we can sort on it
+		if (child.name()) {
+			// Get the current &quot;index&quot; of the child. Id est, if the QName is PID.3.1, then the index is 1
+			curChildIndex = parseInt(child.name().toString().substring(child.name().toString().lastIndexOf(&apos;.&apos;)+1),10);
+			// Boolean placeholder
+			var inserted = false;
+			// Iterate through each child currently in the NEW node
+			for (var i = 0; i &lt;= newNode.children().length()-1; i++) {
+				// Get the index of the child of the new node
+				loopChildIndex = parseInt(newNode.child(i).name().toString().substring(newNode.child(i).name().toString().lastIndexOf(&apos;.&apos;)+1),10);
+				// If the child we want to insert has a lower index then the current child of the new node, then we&apos;re going to insert the child 
+				// right before the current newNode child
+				if (curChildIndex &lt; loopChildIndex) {
+					// Insert the child
+					newNode.insertChildBefore(newNode.children()[i],child);
+					// Set our flag, indicating that an insertion was made
+					inserted = true;
+					// No need to continue iteration
+					break;
+				}
+			}
+			// If no insertion was made, then the index of the child we want to insert is greater than or equal to all of the
+			// indices of the children that have already been inserted in newNode. So, we&apos;ll just append the child to the end.
+			if (!inserted)
+				newNode.appendChild(child);
+		}
+	}
+	// Return the sorted HL7 node
+	return newNode;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>711f9e92-9872-4718-83aa-f8e62e3885b2</id>
+          <name>Get Base64 encoded string</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077840</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Encodes given string into a Base64 string.
+
+	@param {String} strData - String to be encoded
+	@return {String} return Base64 encoded string
+*/
+function getBase64Encoded(strData) {
+	
+	try {
+		
+		if (null == strData) strData = &apos;&apos;;
+		var byteData = new Packages.java.lang.String(strData).getBytes();
+		return FileUtil.encode(byteData).replaceAll(&apos;\r\n|\r|\n&apos;, &apos;&apos;);
+
+	} catch(err) {
+		logger.error(err);
+		return &quot;&quot;;
+	}
+}
+</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>872dae30-3381-458c-a4e5-4f412e21b1fa</id>
+          <name>Get HL7v2 Code Description</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1490476779449</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Retrieve code description for a given HL7v2 table (to be used for ORC, OBR and OBX segments)
+
+	@param {String} table - HL7v2 Table code as per specification
+	@param {String] value - value to convert
+	@return {String} return code description
+*/
+function getHL7v2CodeDescription(table, value) {
+
+	switch(table) {
+		
+		// Table 0038 - Order Status
+		case &quot;0038&quot;:
+			if (&quot;CM&quot; === value.toString()) return &quot;Order complete&quot;
+			else if (&quot;IP&quot; === value.toString()) return &quot;Order incomplete, or contains pending items&quot;
+			else if (&quot;CA&quot; === value.toString()) return &quot;Order was canceled&quot;
+			else if (&quot;DC&quot; === value.toString()) return &quot;Order was discontinued&quot;
+			else if (&quot;ER&quot; === value.toString()) return &quot;Error, order not found&quot;
+			else if (&quot;HD&quot; === value.toString()) return &quot;Order is on hold&quot;
+			else if (&quot;RP&quot; === value.toString()) return &quot;Order has been replaced&quot;
+			else if (&quot;SC&quot; === value.toString()) return &quot;In process, scheduled&quot;
+			else if (&quot;&quot; === value.toString()) return &quot;&quot;
+			else return &quot;&quot;;
+			break;
+
+		// Table 0123 - Result Status
+		case &quot;0123&quot;:
+			if (&quot;F&quot; === value.toString()) return &quot;Final results&quot;
+			else if (&quot;A&quot; === value.toString()) return &quot;Partial results&quot;
+			else if (&quot;C&quot; === value.toString()) return &quot;Correction to results&quot;
+			else if (&quot;I&quot; === value.toString()) return &quot;No results available. The specimen was received, but the procedure is incomplete.&quot;
+			else if (&quot;O&quot; === value.toString()) return &quot;Specimen not yet received&quot;
+			else if (&quot;P&quot; === value.toString()) return &quot;Preliminary results&quot;
+			else if (&quot;R&quot; === value.toString()) return &quot;Results stored&quot;
+			else if (&quot;S&quot; === value.toString()) return &quot;No results available. The procedure is scheduled, but has not been performed.&quot;
+			else if (&quot;X&quot; === value.toString()) return &quot;No results available. The order was canceled.&quot;
+			else return &quot;&quot;;		
+			break;
+
+		// Table 0085 - Observation Result Status
+		case &quot;0085&quot;:
+			if (&quot;F&quot; === value.toString()) return &quot;Final results; can only be changed with a corrected result.&quot;
+			else if (&quot;D&quot; === value.toString()) return &quot;Deletes the OBX record&quot;
+			else if (&quot;I&quot; === value.toString()) return &quot;Specimen in lab; results pending.&quot;
+			else if (&quot;N&quot; === value.toString()) return &quot;Not asked; used to affirmatively document that the observation identified in the OBX was not sought when the universal service ID in OBR.04 implies that it would be sought.&quot;
+			else if (&quot;O&quot; === value.toString()) return &quot;Order detail description only (no result)&quot;
+			else if (&quot;P&quot; === value.toString()) return &quot;Preliminary results&quot;
+			else if (&quot;R&quot; === value.toString()) return &quot;Results entered but not verified&quot;
+			else if (&quot;X&quot; === value.toString()) return &quot;Results cannot be obtained for this observation&quot;
+			else if (&quot;U&quot; === value.toString()) return &quot;Results status change to final without retransmitting results already sent as preliminary. For example, radiology changes status from preliminary to final.&quot;
+			else if (&quot;W&quot; === value.toString()) return &quot;Post original as wrong. For example, transmitted for wrong patient.&quot;
+			else return &quot;&quot;;
+			break;
+	}
+
+	return &quot;&quot;;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>53e03352-fda6-455a-bc6a-54f1b3287838</id>
+          <name>Get NTE segment</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077721</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Builds NTE segment with the comment entry from a single /text/div/p resource element
+	Expected comment entry object is {&quot;class&quot;:&quot;&quot;,&quot;content&quot;:&quot;&quot;}
+
+	// TODO: may require a flag to NOT restrict comment line longer than 60 chars as required for the Order message
+
+	@param {String} entry - JSON object with comment entries
+	@param {String} count - total NTE segment count i.e., NTE.1 [Set ID]	
+	@return {String} return NTE segment string in XML format
+*/
+function getNTESegment(entry, count) {
+
+	if (entry != undefined) {
+
+		var nte = &lt;NTE&gt;
+					&lt;NTE.1&gt;
+						&lt;NTE.1.1&gt;&lt;/NTE.1.1&gt;
+					&lt;/NTE.1&gt;
+					&lt;NTE.2&gt;
+						&lt;NTE.2.1&gt;&lt;/NTE.2.1&gt;
+					&lt;/NTE.2&gt;
+					&lt;NTE.3&gt;
+						&lt;NTE.3.1&gt;&lt;/NTE.3.1&gt;
+					&lt;/NTE.3&gt;
+				&lt;/NTE&gt;;
+
+		// NTE.1 [Set ID]		
+		nte[&apos;NTE.1&apos;][&apos;NTE.1.1&apos;] = count;
+			
+		// NTE.2 [Source of Comment]
+		nte[&apos;NTE.2&apos;][&apos;NTE.2.1&apos;] = entry.class.toString();
+
+		// NTE.3 [Comment]
+		// Comment shall be no longer than 60 characters for the OML_O21 Submit Order message
+		if (entry.content.toString().length &gt; 60)
+			entry.content = entry.content.toString().substring(0,60);
+			
+		nte[&apos;NTE.3&apos;][&apos;NTE.3.1&apos;] = entry.content.toString();
+
+		return nte.toString();
+		
+	} else 
+		return &quot;&quot;;
+		
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>0f2c8346-d098-49b3-8e97-184eef9fc7b4</id>
+          <name>HTTP Response Code indications</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077971</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Add the HTTP response status code description to the HTTP code
+
+	@param {Integer} code - HTTP response status code
+	@return {String} return HTTP response status code and its description
+*/
+function getHttpCodeDescription(code) {
+
+	var text;
+	
+	switch(code) {
+		case 200:
+			text = &quot;OK&quot;;
+			break;
+		case 400:
+			text = &quot;The request was not properly constructed&quot;;
+			break;
+		case 401:
+			text = &quot;The user credentials submitted are not authorized&quot;;
+			break;
+		case 403:
+			text = &quot;The user name submitted does not have permission to access the Results RESTful web service&quot;;
+			break;
+		case 404:
+			text = &quot;The user credentials submitted are not authorized&quot;;
+			break;
+		case 500:
+			text = &quot;An internal server error occurred&quot;;
+			break;	        
+		default:
+			text = &quot;This response status code is undefined in the DEX spec&quot;;
+	}
+
+	return (code + &quot; - &quot; + text);
+	
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>5032a64e-7da6-4885-83e2-348e5ab75600</id>
+          <name>Parse person&apos;s name node</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077624</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Process Person.name element with zero or multiple given names with possible DEX name length limitation
+
+	@param {Object} item - JSON representation of /resource/Person/name node
+	@param {Boolean} lengthLimit - If person&apos;s name limitation applies according to DEX spec (true - apply, false - does not)	
+	@return {Object} return name parts object with family and given names
+*/
+function processPersonName(item, lengthLimit) {
+
+	var nameParts = {family: &quot;&quot;, given1: &quot;&quot;, given2: &quot;&quot;};
+
+	if (item.family != null &amp;&amp; item.family != undefined) {
+		
+		// Last name of the person
+		var family = item.family.value.toString();
+		
+		// If Quest&apos;s length limit applies
+		if (lengthLimit) {
+			// The last name can be a maximum of 20 characters. (p.201)
+			if (family.length &gt; 20) 
+				family = family.substring(0, 20);
+			// The entire patient name cannot exceed 24 characters (p.201)
+			var limit = 24 - family.length;
+		}
+		nameParts.family = family;
+	}
+
+	if (item.given == null || item.given == undefined) return nameParts;
+		
+	if (item.given.length != undefined) {
+		
+		var count = 0;
+		item.given.forEach(function(entry){
+			var given = entry.value.toString();
+			
+			if (given.length &gt; 0) {					
+				if (0 == count) {
+					// The first name is limited to the difference between the number of characters in the last name and 24.				
+					if (given.length &gt; limit &amp;&amp; lengthLimit) given = given.substring(0, limit);
+					nameParts.given1 = given;
+					limit -= given.length;
+				} else {
+					// if the limit is exceeded, a minimum of the first character of the middle initial is always returned in the result message.
+					if (given.length &gt; limit &amp;&amp; lengthLimit) given = given.substring(0, 1);
+					nameParts.given2 = given;
+				}
+			}
+			count++;
+		});			
+	} else {
+		var given = item.given.value.toString();
+		if (given.length &gt; limit &amp;&amp; lengthLimit) given = given.substring(0, limit);
+		nameParts.given1 = given;
+	}
+
+	return nameParts;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>08f30179-5465-4895-a2d3-4933f182035e</id>
+          <name>Remove illegal XML chanracters</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078114</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Strip non valid XML characters from a given text string.
+	CAUTION: This is not a full-fledged function for XML input sanitization 
+
+	@param {String} text - text string that may contain illegal XML characters
+	@return {String} return text string with illegal XML characters replaced
+*/
+function stripNonValidXMLChars(text) {
+
+	if (text == null || text == undefined || text.toString().length == 0) return &quot;&quot;;
+
+	//text = comment.replace(/&amp;/g,&quot;&amp;amp;&quot;);// ampersand - (SN) temporary disabled
+	text = text.replace(/&lt;/g,&quot;&amp;lt;&quot;); // less than
+	text = text.replace(/&gt;/g,&quot;&amp;gt;&quot;); // greater than
+	text = text.replace(/&apos;/g,&quot;&amp;apos;&quot;); // single quotes
+	text = text.replace(/&quot;/g,&quot;&amp;apos;&quot;); // double quotes
+
+	// (SN) Issue #6, #11: unexpected &quot;%&quot; in field
+	text = text.replace(/\|%/g, &quot;|&quot;);
+
+	return text;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>15559e88-2f64-415a-8544-9cbbc2742c79</id>
+          <name>Verifies if Lab test is STD</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077902</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Verifies if the submitted Lab test code is in the list of STD lab tests
+
+	@param {String} code - Lab test code
+	@return {String} return true if Lab test code in the list of STD codes, false otherwise
+*/
+function isSTDLabTest(code) {
+
+	// Check for LOINC codes
+	switch(code) {
+		// 86631, 86632 Chlamydia trachomatis Antibodies 
+		case &quot;1833274&quot;:
+		case &quot;1832970&quot;:
+		case &quot;1833579&quot;:
+		case &quot;44079-2&quot;:
+		// 87591 Neisseria gonorrhoeae
+		case &quot;43305-2&quot;:
+		// 86704	Hepatitis A
+		case &quot;13951-9&quot;:
+		// 87340	Hepatitis B
+		case &quot;1203841&quot;:
+		case &quot;2193342&quot;:
+		case &quot;10900-9&quot;:
+		case &quot;13952-7&quot;:
+		// 81001	Hepatitis C (Urinalysis, Complete)
+		case &quot;13955-0&quot;:
+		case &quot;48159-8&quot;:
+		// 86695	Herpes Simplex Virus 1 (IgG)
+		case &quot;1207706&quot;:
+		// 86696	Herpes Simplex Virus 2 (IgG)
+		case &quot;1208621&quot;:
+		// 86592	VDRL, Serum (Syphilis)
+		case &quot;1239118&quot;:
+		// 86701	HIV-1 Antibody
+		case &quot;29893-5&quot;:
+		// 86702	HIV-2 Antibody
+		case &quot;30361-0&quot;:
+		// 87389	HIV-1/2 Antig. and Antib.,4th Gen
+		case &quot;56888-1&quot;:
+			return true;
+			break;
+	}
+
+	return false;
+	
+}</code>
+        </codeTemplate>
+      </codeTemplates>
+    </codeTemplateLibrary>
+  </codeTemplateLibraries>
+</channel>

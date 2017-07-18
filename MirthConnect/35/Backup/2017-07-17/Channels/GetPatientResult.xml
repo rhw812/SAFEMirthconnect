@@ -1,0 +1,1762 @@
+<channel version="3.4.2">
+  <id>0e065234-bc37-4b39-8bef-64905497ec91</id>
+  <nextMetaDataId>4</nextMetaDataId>
+  <name>GetPatientResult</name>
+  <description>Returns the patient&apos;s most recent test result, and whether that patient has outstanding results</description>
+  <enabled>true</enabled>
+  <lastModified>
+    <time>1497379719285</time>
+    <timezone>America/New_York</timezone>
+  </lastModified>
+  <revision>133</revision>
+  <sourceConnector version="3.4.2">
+    <metaDataId>0</metaDataId>
+    <name>sourceConnector</name>
+    <properties class="com.mirth.connect.connectors.http.HttpReceiverProperties" version="3.4.2">
+      <pluginProperties>
+        <com.mirth.connect.plugins.httpauth.NoneHttpAuthProperties version="3.4.2">
+  <authType>NONE</authType>
+        </com.mirth.connect.plugins.httpauth.NoneHttpAuthProperties>
+      </pluginProperties>
+      <listenerConnectorProperties version="3.4.2">
+        <host>0.0.0.0</host>
+        <port>8015</port>
+      </listenerConnectorProperties>
+      <sourceConnectorProperties version="3.4.2">
+        <responseVariable>d3</responseVariable>
+        <respondAfterProcessing>true</respondAfterProcessing>
+        <processBatch>false</processBatch>
+        <firstResponse>false</firstResponse>
+        <processingThreads>1</processingThreads>
+        <resourceIds class="linked-hash-map">
+          <entry>
+            <string>Default Resource</string>
+            <string>[Default Resource]</string>
+          </entry>
+          <entry>
+            <string>29f52768-5925-40e8-b62d-a265b40e6ab4</string>
+            <string>hapi-fhir</string>
+          </entry>
+        </resourceIds>
+        <queueBufferSize>1000</queueBufferSize>
+      </sourceConnectorProperties>
+      <xmlBody>false</xmlBody>
+      <parseMultipart>true</parseMultipart>
+      <includeMetadata>false</includeMetadata>
+      <binaryMimeTypes>application/.*(?&lt;!json|xml)$|image/.*|video/.*|audio/.*</binaryMimeTypes>
+      <binaryMimeTypesRegex>true</binaryMimeTypesRegex>
+      <responseContentType>text/plain</responseContentType>
+      <responseDataTypeBinary>false</responseDataTypeBinary>
+      <responseStatusCode></responseStatusCode>
+      <responseHeaders class="linked-hash-map"/>
+      <charset>UTF-8</charset>
+      <contextPath>GetPatientResult</contextPath>
+      <timeout>0</timeout>
+      <staticResources/>
+    </properties>
+    <transformer version="3.4.2">
+      <steps>
+        <step>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Establish Client Connection / Get Patient</name>
+          <script>importPackage(Packages.java.util);
+importPackage(Packages.java.text);
+importPackage(Packages.ca.uhn.fhir.context);
+importPackage(Packages.ca.uhn.fhir.model.dstu2.resource);
+importPackage(Packages.ca.uhn.fhir.rest.api);
+importPackage(Packages.ca.uhn.fhir.rest.client);
+
+var PatientID = msg[&apos;PatientIdentifier&apos;][&apos;Value&apos;]
+
+var Url = configurationMap.get(&apos;sparkRawURL&apos;)
+var ctx = Packages.ca.uhn.fhir.context.FhirContext.forDstu2();
+
+var client = ctx.newRestfulGenericClient( Url );
+ctx.getRestfulClientFactory().setSocketTimeout(60 * 1000); 
+ctx.getRestfulClientFactory().setConnectTimeout(60 * 1000); 
+
+channelMap.put( &quot;client&quot;, client );
+
+var patientSearchResults = client
+	.search()
+	.forResource(Patient)
+	.where(Packages.ca.uhn.fhir.model.dstu2.resource.Patient.IDENTIFIER.exactly().identifier( PatientID ))
+	.returnBundle(Bundle)
+	.execute();
+
+var ms = patientSearchResults.getEntry();
+
+var msSize = ms.size();
+
+var patientResource;
+var patientString;
+var patientResourceID;
+
+if( msSize )
+{
+	patientResource = ms.get(0).getResource();
+	patientResourceID = patientResource.getId().getIdPart()
+	channelMap.put(&quot;PatientResource&quot;, patientResource );
+
+	patientResourceID = patientResource.getId().getIdPart()
+	channelMap.put(&quot;PatientResourceID&quot;, patientResourceID );
+
+	// Account for out-of-order Patient IDs
+	if( patientResource.getIdentifierFirstRep().getUse() == &quot;official&quot; )
+	{
+		tmp[&apos;PatientIdentifier&apos;][0][&apos;Value&apos;] = patientResource.getIdentifierFirstRep().getValue();
+		tmp[&apos;PatientIdentifier&apos;][1][&apos;Value&apos;] = patientResource.getIdentifier().get(1).getValue();
+	}
+	else
+	{
+		tmp[&apos;PatientIdentifier&apos;][1][&apos;Value&apos;] = patientResource.getIdentifierFirstRep().getValue();
+		tmp[&apos;PatientIdentifier&apos;][0][&apos;Value&apos;] = patientResource.getIdentifier().get(1).getValue();
+	}	
+}
+else
+{
+	throw &quot;GetPatientResult: Patient Not Found&quot;;
+}</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>importPackage(Packages.java.util);
+importPackage(Packages.java.text);
+importPackage(Packages.ca.uhn.fhir.context);
+importPackage(Packages.ca.uhn.fhir.model.dstu2.resource);
+importPackage(Packages.ca.uhn.fhir.rest.api);
+importPackage(Packages.ca.uhn.fhir.rest.client);
+
+var PatientID = msg[&apos;PatientIdentifier&apos;][&apos;Value&apos;]
+
+var Url = configurationMap.get(&apos;sparkRawURL&apos;)
+var ctx = Packages.ca.uhn.fhir.context.FhirContext.forDstu2();
+
+var client = ctx.newRestfulGenericClient( Url );
+ctx.getRestfulClientFactory().setSocketTimeout(60 * 1000); 
+ctx.getRestfulClientFactory().setConnectTimeout(60 * 1000); 
+
+channelMap.put( &quot;client&quot;, client );
+
+var patientSearchResults = client
+	.search()
+	.forResource(Patient)
+	.where(Packages.ca.uhn.fhir.model.dstu2.resource.Patient.IDENTIFIER.exactly().identifier( PatientID ))
+	.returnBundle(Bundle)
+	.execute();
+
+var ms = patientSearchResults.getEntry();
+
+var msSize = ms.size();
+
+var patientResource;
+var patientString;
+var patientResourceID;
+
+if( msSize )
+{
+	patientResource = ms.get(0).getResource();
+	patientResourceID = patientResource.getId().getIdPart()
+	channelMap.put(&quot;PatientResource&quot;, patientResource );
+
+	patientResourceID = patientResource.getId().getIdPart()
+	channelMap.put(&quot;PatientResourceID&quot;, patientResourceID );
+
+	// Account for out-of-order Patient IDs
+	if( patientResource.getIdentifierFirstRep().getUse() == &quot;official&quot; )
+	{
+		tmp[&apos;PatientIdentifier&apos;][0][&apos;Value&apos;] = patientResource.getIdentifierFirstRep().getValue();
+		tmp[&apos;PatientIdentifier&apos;][1][&apos;Value&apos;] = patientResource.getIdentifier().get(1).getValue();
+	}
+	else
+	{
+		tmp[&apos;PatientIdentifier&apos;][1][&apos;Value&apos;] = patientResource.getIdentifierFirstRep().getValue();
+		tmp[&apos;PatientIdentifier&apos;][0][&apos;Value&apos;] = patientResource.getIdentifier().get(1).getValue();
+	}	
+}
+else
+{
+	throw &quot;GetPatientResult: Patient Not Found&quot;;
+}</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>1</sequenceNumber>
+          <name>Get Reports</name>
+          <script>var reportSearchResults = client.search()
+	.forResource(DiagnosticReport) 
+	.where(DiagnosticReport.SUBJECT.hasId($(&apos;PatientResourceID&apos;)))
+	.sort().ascending(DiagnosticReport.ISSUED)	
+	.returnBundle(Bundle)	
+	.execute();
+
+	
+var ms;
+var firstTime = true; 
+var reports = new HashMap();
+var lastDate;
+
+var JSONDate = new SimpleDateFormat( &quot;yyyy-MM-dd&quot;);
+
+do
+{
+
+	if( !firstTime )
+	{
+		reportSearchResults = client.loadPage().next(reportSearchResults).execute();
+	}
+	
+	ms = reportSearchResults.getEntry();
+		
+	for(var i=0; i&lt;ms.size() ; i++ )
+	{
+		var report = ms.get(i).getResource();
+//		var reportString = ctx.newJsonParser().encodeResourceToString(report);
+
+		reports.put( report.getCode().getCodingFirstRep().getCode().toString(), report  );
+		lastDate = JSONDate.format( report.getIssued() );
+		
+	}
+	
+	firstTime = false;
+}
+while( reportSearchResults.getLink(Bundle.LINK_NEXT) != null );
+
+tmp[&apos;MostRecentLabSet&apos;][&apos;DateOfService&apos;] = lastDate;
+
+var reportArrayList = new ArrayList( reports.values() );
+var size = reportArrayList.size();
+
+var jp = ctx.newJsonParser();
+		
+for( var i=0; i&lt;size ; i++ )
+{
+
+	var theLab =  
+{
+	 &quot;Order&quot;: {
+		 &quot;PlacerOrderNumber&quot;: &quot;&quot;,
+		 &quot;FillerOrderNumber&quot;: &quot;&quot;
+	},
+	 &quot;Result&quot;: {
+		 &quot;ParentCode&quot;: &quot;&quot;,
+		 &quot;PerformedTestCode&quot;: {
+			 &quot;Code&quot;: &quot;&quot;,
+			 &quot;System&quot;: &quot;&quot;,
+			 &quot;Display&quot;: &quot;&quot;
+		},
+		 &quot;ResultDate&quot;: &quot;&quot;,
+		 &quot;Status&quot;: &quot;Final&quot;,
+		 &quot;Observations&quot;: [
+		],
+		 &quot;TextResultLines&quot;: &quot;&quot;,
+		 &quot;ReportPDFBase64&quot;: &quot;&quot;,
+		 &quot;ReportHL7Base64&quot;: &quot;&quot;
+	}
+};
+	
+	var thisReport = reportArrayList.get(i);
+		
+
+	theLab.Result.PerformedTestCode.Code = thisReport.getCode().getCodingFirstRep().getCode();
+	theLab.Result.PerformedTestCode.System = thisReport.getCode().getCodingFirstRep().getSystem();
+	theLab.Result.PerformedTestCode.Display = thisReport.getCode().getCodingFirstRep().getDisplay();
+	
+	theLab.Result.ResultDate = JSONDate.format( thisReport.getIssued() );
+	theLab.Result.Status = thisReport.getStatus();
+
+	theLab.Order.PlacerOrderNumber = thisReport.getIdentifier().get(0).getValue();
+	theLab.Order.FillerOrderNumber = thisReport.getIdentifier().get(1).getValue();
+	theLab.Result.ParentCode = thisReport.getConclusion();	
+	
+	var Observations = thisReport.getContained().getContainedResources();
+	var ObservationString = &quot;&quot;;
+	var ObservationsCount = Observations.size();
+
+//	logger.error( &quot;Observations: &quot; + ObservationsCount );
+		
+	for( var j=0 ; j&lt;ObservationsCount ; j++ )
+	{
+		theLab.Result.Observations.push( JSON.parse( jp.encodeResourceToString(Observations.get(j) ) ) );
+	}	
+
+	if( !thisReport.getText().isEmpty())
+	{			
+		theLab.Result.TextResultLines = thisReport.getText().getDiv().getValueAsString();
+	}
+		
+	var presentedForms = thisReport.getPresentedForm();
+		
+	if(presentedForms.size()&gt;1)
+	{
+//		theLab.Result.ReportPDFBase64 = FileUtil.encode( presentedForms.get(0).getData() );
+//		theLab.Result.ReportHL7Base64 = FileUtil.encode( presentedForms.get(1).getData() );
+	}
+	
+	tmp[&apos;Labs&apos;].push( theLab );	
+}</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>var reportSearchResults = client.search()
+	.forResource(DiagnosticReport) 
+	.where(DiagnosticReport.SUBJECT.hasId($(&apos;PatientResourceID&apos;)))
+	.sort().ascending(DiagnosticReport.ISSUED)	
+	.returnBundle(Bundle)	
+	.execute();
+
+	
+var ms;
+var firstTime = true; 
+var reports = new HashMap();
+var lastDate;
+
+var JSONDate = new SimpleDateFormat( &quot;yyyy-MM-dd&quot;);
+
+do
+{
+
+	if( !firstTime )
+	{
+		reportSearchResults = client.loadPage().next(reportSearchResults).execute();
+	}
+	
+	ms = reportSearchResults.getEntry();
+		
+	for(var i=0; i&lt;ms.size() ; i++ )
+	{
+		var report = ms.get(i).getResource();
+//		var reportString = ctx.newJsonParser().encodeResourceToString(report);
+
+		reports.put( report.getCode().getCodingFirstRep().getCode().toString(), report  );
+		lastDate = JSONDate.format( report.getIssued() );
+		
+	}
+	
+	firstTime = false;
+}
+while( reportSearchResults.getLink(Bundle.LINK_NEXT) != null );
+
+tmp[&apos;MostRecentLabSet&apos;][&apos;DateOfService&apos;] = lastDate;
+
+var reportArrayList = new ArrayList( reports.values() );
+var size = reportArrayList.size();
+
+var jp = ctx.newJsonParser();
+		
+for( var i=0; i&lt;size ; i++ )
+{
+
+	var theLab =  
+{
+	 &quot;Order&quot;: {
+		 &quot;PlacerOrderNumber&quot;: &quot;&quot;,
+		 &quot;FillerOrderNumber&quot;: &quot;&quot;
+	},
+	 &quot;Result&quot;: {
+		 &quot;ParentCode&quot;: &quot;&quot;,
+		 &quot;PerformedTestCode&quot;: {
+			 &quot;Code&quot;: &quot;&quot;,
+			 &quot;System&quot;: &quot;&quot;,
+			 &quot;Display&quot;: &quot;&quot;
+		},
+		 &quot;ResultDate&quot;: &quot;&quot;,
+		 &quot;Status&quot;: &quot;Final&quot;,
+		 &quot;Observations&quot;: [
+		],
+		 &quot;TextResultLines&quot;: &quot;&quot;,
+		 &quot;ReportPDFBase64&quot;: &quot;&quot;,
+		 &quot;ReportHL7Base64&quot;: &quot;&quot;
+	}
+};
+	
+	var thisReport = reportArrayList.get(i);
+		
+
+	theLab.Result.PerformedTestCode.Code = thisReport.getCode().getCodingFirstRep().getCode();
+	theLab.Result.PerformedTestCode.System = thisReport.getCode().getCodingFirstRep().getSystem();
+	theLab.Result.PerformedTestCode.Display = thisReport.getCode().getCodingFirstRep().getDisplay();
+	
+	theLab.Result.ResultDate = JSONDate.format( thisReport.getIssued() );
+	theLab.Result.Status = thisReport.getStatus();
+
+	theLab.Order.PlacerOrderNumber = thisReport.getIdentifier().get(0).getValue();
+	theLab.Order.FillerOrderNumber = thisReport.getIdentifier().get(1).getValue();
+	theLab.Result.ParentCode = thisReport.getConclusion();	
+	
+	var Observations = thisReport.getContained().getContainedResources();
+	var ObservationString = &quot;&quot;;
+	var ObservationsCount = Observations.size();
+
+//	logger.error( &quot;Observations: &quot; + ObservationsCount );
+		
+	for( var j=0 ; j&lt;ObservationsCount ; j++ )
+	{
+		theLab.Result.Observations.push( JSON.parse( jp.encodeResourceToString(Observations.get(j) ) ) );
+	}	
+
+	if( !thisReport.getText().isEmpty())
+	{			
+		theLab.Result.TextResultLines = thisReport.getText().getDiv().getValueAsString();
+	}
+		
+	var presentedForms = thisReport.getPresentedForm();
+		
+	if(presentedForms.size()&gt;1)
+	{
+//		theLab.Result.ReportPDFBase64 = FileUtil.encode( presentedForms.get(0).getData() );
+//		theLab.Result.ReportHL7Base64 = FileUtil.encode( presentedForms.get(1).getData() );
+	}
+	
+	tmp[&apos;Labs&apos;].push( theLab );	
+}</string>
+            </entry>
+          </data>
+        </step>
+      </steps>
+      <inboundTemplate encoding="base64">ewoJICJQYXRpZW50SWRlbnRpZmllciI6IAoJCXsKCQkJICJBc3NpZ25pbmdBdXRob3JpdHkiOiAi
+U0FGRSIsCgkJCSAiVmFsdWUiOiAiU0FGRS4xMTExMTExMSIKCQl9Cn0=</inboundTemplate>
+      <outboundTemplate encoding="base64">ew0KICAiUGF0aWVudElkZW50aWZpZXIiIDogWw0KICAgIHsNCiAgICAgICJBc3NpZ25pbmdBdXRo
+b3JpdHkiIDogIlNBRkUiLA0KICAgICAgIlZhbHVlIiA6IDExMTExMTExMTENCiAgICB9LA0KICAg
+IHsNCiAgICAgICJBc3NpZ25pbmdBdXRob3JpdHkiIDogIkVIUiIsDQogICAgICAiVmFsdWUiIDog
+MjIyMjIyMjIyMjINCiAgICB9DQogIF0sDQogICJNb3N0UmVjZW50TGFiU2V0IiA6IHsNCiAgICAi
+RGF0ZU9mU2VydmljZSIgOiAiMTk3Mi0xMS0zMCIKICB9LA0KICAiTGFicyIgOiBbDQogIF0NCn0=
+</outboundTemplate>
+      <inboundDataType>JSON</inboundDataType>
+      <outboundDataType>JSON</outboundDataType>
+      <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </inboundProperties>
+      <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </outboundProperties>
+    </transformer>
+    <filter version="3.4.2">
+      <rules/>
+    </filter>
+    <transportName>HTTP Listener</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <waitForPrevious>true</waitForPrevious>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector version="3.4.2">
+      <metaDataId>3</metaDataId>
+      <name>Get Reports</name>
+      <properties class="com.mirth.connect.connectors.vm.VmDispatcherProperties" version="3.4.2">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.4.2">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="linked-hash-map">
+            <entry>
+              <string>Default Resource</string>
+              <string>[Default Resource]</string>
+            </entry>
+          </resourceIds>
+          <queueBufferSize>1000</queueBufferSize>
+        </destinationConnectorProperties>
+        <channelId>none</channelId>
+        <channelTemplate>${message.encodedData}</channelTemplate>
+        <mapVariables/>
+      </properties>
+      <transformer version="3.4.2">
+        <steps/>
+        <inboundDataType>JSON</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.4.2">
+        <steps/>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>JSON</inboundDataType>
+        <outboundDataType>JSON</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.4.2">
+        <rules/>
+      </filter>
+      <transportName>Channel Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+  </destinationConnectors>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+// Responses returned from here will be stored as &quot;Postprocessor&quot; in the response map
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <undeployScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</undeployScript>
+  <properties version="3.4.2">
+    <clearGlobalChannelMap>true</clearGlobalChannelMap>
+    <messageStorageMode>DEVELOPMENT</messageStorageMode>
+    <encryptData>false</encryptData>
+    <removeContentOnCompletion>false</removeContentOnCompletion>
+    <removeOnlyFilteredOnCompletion>false</removeOnlyFilteredOnCompletion>
+    <removeAttachmentsOnCompletion>false</removeAttachmentsOnCompletion>
+    <initialState>STARTED</initialState>
+    <storeAttachments>false</storeAttachments>
+    <tags class="linked-hash-set">
+      <string>RKW</string>
+      <string>CURRENT</string>
+    </tags>
+    <metaDataColumns>
+      <metaDataColumn>
+        <name>SOURCE</name>
+        <type>STRING</type>
+        <mappingName>mirth_source</mappingName>
+      </metaDataColumn>
+      <metaDataColumn>
+        <name>TYPE</name>
+        <type>STRING</type>
+        <mappingName>mirth_type</mappingName>
+      </metaDataColumn>
+    </metaDataColumns>
+    <attachmentProperties version="3.4.2">
+      <type>None</type>
+      <properties/>
+    </attachmentProperties>
+    <archiveEnabled>true</archiveEnabled>
+    <resourceIds class="linked-hash-map">
+      <entry>
+        <string>Default Resource</string>
+        <string>[Default Resource]</string>
+      </entry>
+      <entry>
+        <string>29f52768-5925-40e8-b62d-a265b40e6ab4</string>
+        <string>hapi-fhir</string>
+      </entry>
+    </resourceIds>
+  </properties>
+  <codeTemplateLibraries>
+    <codeTemplateLibrary version="3.4.2">
+      <id>aa9b2404-fbde-4bbe-851f-a0a19ca6ae36</id>
+      <name>DEX Library</name>
+      <revision>5</revision>
+      <lastModified>
+        <time>1493415645281</time>
+        <timezone>UTC</timezone>
+      </lastModified>
+      <description>Last updated: March 25, 2017</description>
+      <includeNewChannels>true</includeNewChannels>
+      <enabledChannelIds>
+        <string>b73a73d9-b589-4dd7-8a5b-d24fe9ed522d</string>
+        <string>afa52ba3-bd0a-4634-8ae5-b9c91c4dc3b9</string>
+        <string>9eeed45d-4613-4501-86f1-236e91808742</string>
+        <string>4c7bc0bd-aede-4e90-9ce8-cde50750f1e8</string>
+        <string>041540bc-16e7-43fe-a9eb-1ca3c5ea17db</string>
+        <string>ae149084-1aaa-4867-a7e3-b66860874f05</string>
+        <string>829fe0c9-9229-4cb3-9cc3-1250213f284f</string>
+        <string>e0f422e1-0550-40f1-8a37-e148e0b5f636</string>
+      </enabledChannelIds>
+      <disabledChannelIds>
+        <string>f24a2bfd-8f45-4170-b6d6-6410f426ec66</string>
+      </disabledChannelIds>
+      <codeTemplates>
+        <codeTemplate version="3.4.2">
+          <id>5e2f9cc3-3b23-4967-9fd1-6a9c602dd29e</id>
+          <name>Convert FHIR to HL7v2 code</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077779</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts FHIR code to HL7v2 code as defined by the conversion table according to the HL7v2 specification
+
+	@param {String} table - HL7v2 Table code as per specification
+	@param {String] value - value to convert
+	@return {String} return code according to conversion table
+*/
+function convertTable(table, value) {
+
+	switch(table) {
+		
+		// Table 0001 - Administrative Sex
+		case &quot;0001&quot;:
+			if (value.toString() == &quot;male&quot;) return &quot;M&quot;
+			else if (value.toString() == &quot;female&quot;) return &quot;F&quot;
+			else if (value.toString() == &quot;other&quot;) return &quot;O&quot;
+			else return &quot;U&quot;;
+			break;
+	}
+
+	return &quot;&quot;;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>025ece06-d4ad-47d7-8047-67acaf3072a5</id>
+          <name>Convert HL7 Date Time</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077689</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts date, time and time zone from HL7v2 to ISO 8601 (JSON) format.
+	Possible input string format: yyyymmddhhmm[ss[.s[s[s[s]]]]][+/-zzzz]
+
+	@param {String} date - datetime to be converted
+	@return {String} return JSON representation of the datetime
+*/
+function convertHL7DateTime(datetime) {
+
+/*
+	Format: yyyymmddhhmm[ss[.s[s[s[s]]]]][+/-zzzz]
+	The date and time elements are populated as follows:
+	yyyy = Required
+	mm = Required if yyyy is not 0000.
+	dd = Required if yyyy is not 0000.
+	hh = Required if yyyy is not 0000.
+	mm = Required if yyyy is not 0000.
+	[ss[.s[s[s[s]]]]] = Conditional. Optional if yyyy is not 0000.
+	[+/-zzzz] = Optional
+*/
+
+
+	if (datetime == null || datetime.length == 0 || typeof datetime === &quot;undefined&quot;) return &quot;&quot;;
+
+	try {
+		var strDateTime = new Packages.java.lang.StringBuffer(datetime.toString());
+	
+		// Extract time zone
+		var index;
+		var symbol;
+		var timeZone;
+		
+		if (strDateTime.indexOf(&quot;-&quot;) &gt; 0) {
+			index = strDateTime.indexOf(&quot;-&quot;);
+		} else if (strDateTime.indexOf(&quot;+&quot;) &gt; 0) {
+			index = strDateTime.indexOf(&quot;+&quot;);
+		} else
+			index = -1;
+	
+		if (index &gt; 0) {		
+			symbol = strDateTime.substring(index, index+1);
+			timeZone = new Packages.java.lang.StringBuffer(strDateTime.substring(index+1));
+			if (timeZone.length() &gt; 2)
+				timeZone.insert(2,&quot;:&quot;);
+			strDateTime.delete(index, strDateTime.length());		
+		} else {
+			symbol = &quot;&quot;;
+			timeZone = &quot;&quot;;
+		}
+	
+		// Extract decimal fraction of a second
+		var fraction = strDateTime.indexOf(&quot;.&quot;);
+		var milliseconds;
+		if (fraction &gt; 0) {
+			milliseconds = strDateTime.substring(fraction, strDateTime.length());
+			strDateTime.delete(fraction, strDateTime.length());
+		} else {
+			milliseconds = &quot;&quot;;
+		}
+	
+		// Convert the main part
+		var jsonDateTime = new Packages.java.lang.StringBuffer(strDateTime);
+		
+		// yyyyMMdd
+		if (strDateTime.length() &gt;= &quot;yyyyMMdd&quot;.length) {
+			jsonDateTime.insert(4,&quot;-&quot;);
+			jsonDateTime.insert(7,&quot;-&quot;);
+		}
+	
+		// yyyyMMddhh
+		if (strDateTime.length() &gt;= &quot;yyyyMMddhh&quot;.length) {
+			jsonDateTime.insert(10,&quot;T&quot;);
+		}
+	
+		// yyyyMMddhhmm
+		if (strDateTime.length() &gt;= &quot;yyyyMMddhhmm&quot;.length) {
+			jsonDateTime.insert(13,&quot;:&quot;);
+			
+		}
+		
+		// yyyymmddhhmmss
+		if (strDateTime.length() &gt;= &quot;yyyymmddhhmmss&quot;.length) {
+			jsonDateTime.insert(16,&quot;:&quot;);		
+		}
+	
+	} catch(ex) {
+		jsonDateTime = &quot;0000-00-00&quot;
+		milliseconds = &quot;&quot;;
+		symbol = &quot;&quot;;
+		timeZone = &quot;&quot;;
+		logger.error(&quot;convertHL7DateTime(&quot; + datetime + &quot;) exception: &quot; + ex);	
+	} finally {
+		return jsonDateTime.toString() + milliseconds.toString() + symbol.toString() + timeZone.toString();
+	}
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>3d9a32c6-2d37-49d2-afe4-e309356085b7</id>
+          <name>Convert JSON Date Time</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078075</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts date, time and time zone from ISO 8601 (JSON) to HL7v2 format.
+	Possible input string format: yyyy-mm-ddThh:mm:ss.nnnnnn+|-hh:mm
+
+	@param {String} date - datetime to be converted
+	@return {String} return HL7v2 representation of the datetime
+*/
+function convertJSONDateTime(datetime) {
+
+/*
+	Format: yyyy-mm-dd[Thh:mm[:ss[.nnnnnn[+|-hh:mm]]]]
+*/
+
+	var date;
+	var time;
+	
+	var arrDateTime = datetime.split(&quot;T&quot;);
+	
+	if (arrDateTime.length == 1) {
+		date = arrDateTime[0];
+		time = &quot;&quot;;
+	} else if (arrDateTime.length == 2) {
+		date = arrDateTime[0];
+		time = arrDateTime[1];
+	} else 
+		return &quot;&quot;;
+
+	date = date.replace(/\-/g, &quot;&quot;);
+	time = time.replace(/\:/g, &quot;&quot;);
+
+	return date + time;
+
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>a758235b-06a9-4c9d-8256-e9cd70d38bb1</id>
+          <name>Convert Phone</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077936</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Inserts hyphens into the phone number if it is 7 digits in length
+
+	@param {String} phone - initial string to convert
+	@return {String} return phone number
+*/
+function convertPhone(phone) {
+
+	try {
+		var strPhone = new Packages.java.lang.StringBuffer(phone.toString());	
+		
+		if (strPhone.length() == 7) {			
+			strPhone.insert(3,&quot;-&quot;);
+			strPhone.insert(6,&quot;-&quot;);
+			return strPhone.toString();			
+		} else 
+			return phone.toString();
+		
+	} catch(ex) {
+		return phone.toString();		
+	} 
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>dc6049ce-02d8-4022-b10e-6bc9978ab3bd</id>
+          <name>Convert XML to JSON</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077867</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts a string in XML format into its JSON representation.
+	This function requires org.json.jar to be deployed to the /custom-lib folder on Mirth
+
+	@param {String} input - A string in XML format
+	@return {String} return a string representing initial XML feed but in JSON format
+*/
+function convertXMLtoJSON(input) {
+	var strJSON = Packages.org.json.XML.toJSONObject(input.toString());
+	return strJSON.toString(2);	
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>2f174050-3927-4c30-a984-26c98e29bd61</id>
+          <name>Converts Administrative Gender</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078148</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Verifies and converts HL7v2 administrative gender value to FHIR value set defined by
+	http://hl7.org/fhir/administrative-gender
+	
+	@param {String} code - HL7v2 PID.8 [Administrative Sex] code
+	@return {String} return FHIR value set code
+*/
+function getGenderValue(code) {
+
+	var gender;
+
+	switch(code) {
+		case &quot;M&quot;:
+			gender = &quot;male&quot;;
+			break;
+		case &quot;F&quot;:
+			gender = &quot;female&quot;;
+		 	break;
+		case &quot;O&quot;:
+		case &quot;A&quot;:
+		case &quot;N&quot;:
+			gender = &quot;other&quot;;
+			break; 	
+		default:
+			gender = &quot;unknown&quot;;		 	
+	}
+
+	return gender;	
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>943f9793-83e0-403a-84e9-40ea3fcd92d6</id>
+          <name>Converts Phone string to XTN</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078031</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Converts phone number string with caret dividers into XTN data type.
+	Supported formats: 1-314-8727127 or 314-8727127
+	Returned formats: ^^PH^^1^314^8727127 or ^^PH^^^314^8727127 or ^^PH^^^^8727127
+
+	@param {String} phone - Phone string in one of the supported format
+	@return {String} return Phone string as per XTN data type
+*/
+function convertPhoneXTN(phone) {
+
+	phone = phone.replace(/\+/g,&quot;&quot;);
+
+	// XTN data type example: ^^PH^^^734^6777777
+
+	//	    916-3000		\d{3}-\d{4}			^^PH^^^^9163000
+	//	    9163000		\d{7}				^^PH^^^^9163000
+	//   972-9163000		\d{3}-\d{7}			^^PH^^^972^9163000
+	//   972-916-3000  		\d{3}-\d{3}-\d{4}		^^PH^^^972^9163000
+	// 1-972-9163000 		\d{1}-\d{3}-\d{7}		^^PH^^1^972^9163000
+	// 1-972-916-3000 		\d{1}-\d{3}-\d{3}-\d{4}	^^PH^^1^972^9163000
+
+	var arrPhone = phone.split(&quot;-&quot;);
+	if (arrPhone.length &lt;= 1) return &quot;^^^^^^^^&quot; + phone;
+
+	// 1-972-9163000
+	if (phone.match(/\d{1}-\d{3}-\d{7}/) != null) {
+		// ^^PH^^1^734^6777777
+		return &quot;^^PH^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1] + &quot;^&quot; + arrPhone[2];
+
+	// 1-972-916-3000	
+	} else if (phone.match(/\d{1}-\d{3}-\d{3}-\d{4}/) != null) {
+		// ^^PH^^1^734^6777777
+		return &quot;^^PH^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1] + &quot;^&quot; + arrPhone[2] + arrPhone[3];
+
+	// 972-9163000	
+	} else if (phone.match(/\d{3}-\d{7}/) != null) {
+		// ^^PH^^^734^6777777
+		return &quot;^^PH^^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1];
+
+	// 972-916-3000
+	} else if (phone.match(/\d{3}-\d{3}-\d{4}/) != null) {
+		// ^^PH^^^972^9163000
+		return &quot;^^PH^^^&quot; + arrPhone[0] + &quot;^&quot; + arrPhone[1] + arrPhone[2];
+
+	// 9163000
+	} else if (phone.match(/\d{7}/) != null) {
+		// ^^PH^^^^9163000
+		return &quot;^^PH^^^^&quot; + arrPhone[0];
+
+	// 916-3000
+	} else if (phone.match(/\d{3}-\d{4}/) != null) {
+		// ^^PH^^^^9163000
+		return &quot;^^PH^^^^&quot; + arrPhone[0] + arrPhone[1];
+		
+	} else
+		return &quot;^^^^^^^^&quot; + phone; 
+
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>58a19daa-aada-46ac-ae7f-2b5e5848405b</id>
+          <name>Create OperationOutcome resource</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077663</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Creates OperationOutcome resource to inform about validation errors
+	
+	@param {Array} error - A list of errors or comments
+	@param {Object} issue - An object with severity, code and details associated with outcome
+	@param {Object} messages - An object with inbounb and outbound messages to be logged
+	@param {String} uuid - A string with uuid to pair request and response FHIR feeds	
+	@param {String} format - A resource output format (xml | json)	
+	@return {String} outcome - OperationOutcome resource in required format
+*/
+function getOperationOutcome(error, issue, messages, uuid, format) {
+
+	// Expected issue object format:
+	// var issue = {severity: &quot;&quot;, code: &quot;&quot;, details: &quot;&quot;};
+
+	// Expected messages object format:
+	// var messages = {request: &quot;&quot;, resp: &quot;&quot;};
+
+	// Namespaces are required to validate against FHIR XML Schema
+	if (format.toUpperCase() != &quot;JSON&quot;) 
+		default xml namespace = &quot;http://hl7.org/fhir&quot;;
+		
+	var outcome = &lt;OperationOutcome&gt;
+				&lt;id value=&quot;responsestatus&quot;/&gt;
+				&lt;extension url=&quot;request&quot;&gt;
+					&lt;valueBase64Binary value=&quot;&quot;/&gt;
+				&lt;/extension&gt;
+				&lt;extension url=&quot;response&quot;&gt;
+					&lt;valueBase64Binary value=&quot;&quot;/&gt;
+				&lt;/extension&gt;
+				&lt;issue&gt;
+					&lt;severity value=&quot;&quot;/&gt;
+					&lt;code value=&quot;&quot;/&gt;
+					&lt;details&gt;
+						&lt;text value=&quot;&quot;/&gt;
+					&lt;/details&gt;
+				&lt;/issue&gt;
+			&lt;/OperationOutcome&gt;;
+
+	if (uuid != null &amp;&amp; uuid != undefined &amp;&amp; uuid.toString() != &quot;&quot;) 
+		outcome.id.@value = &quot;responsestatus&quot; + uuid;
+		
+	outcome.issue.severity.@value = issue.severity;
+	outcome.issue.code.@value = issue.code;
+	outcome.issue.details.text.@value = issue.details;
+
+	// xhtml namespace is intentionally removed
+	var text = &lt;text&gt;
+			    	&lt;status value=&quot;generated&quot;/&gt;
+			    	&lt;div/&gt;
+			  &lt;/text&gt;;
+
+	text.div.* = new XMLList();
+	error.forEach(function(n){
+	  text.div.* += new XML(&quot;&lt;p&gt;&quot; + n +&quot;&lt;/p&gt;&quot;);
+	});
+
+	outcome.id += text;
+
+	// If request or response messages are available, encode them
+	if (messages.request != undefined &amp;&amp; messages.request.toString() != &quot;&quot;) 
+		outcome.extension.(@url == &quot;request&quot;)[0].valueBase64Binary.@value = getBase64Encoded(messages.request.toString());	
+	else
+		delete outcome.extension.(@url == &quot;request&quot;)[0];
+
+
+	if (messages.resp != undefined &amp;&amp; messages.resp.toString() != &quot;&quot;) 	
+		outcome.extension.(@url == &quot;response&quot;)[0].valueBase64Binary.@value = getBase64Encoded(messages.resp.toString());
+	else
+		delete outcome.extension.(@url == &quot;response&quot;)[0];
+
+	// Convert to a requested format
+	if (format.toUpperCase() == &quot;JSON&quot;) {
+		return convertXMLtoJSON(outcome.toString());		
+	} else {
+		// Namespace is required to validate FHIR XML
+		outcome = outcome.toString().replace(&apos;&lt;div&gt;&apos;, &apos;&lt;div  xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&apos;);
+		return outcome.toString();
+	}
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>52360391-d3f2-4714-8bd3-98c53c85c387</id>
+          <name>Fix HL7v2 node order</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077814</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Returns a new E4X node where the order of all siblings and descendants have been fixed as per the Mirth HL7 dot notation convention.
+	@param {String} node - The node to be fixed
+	@return {String} return - E4X node
+*/
+/*
+	Author: Nick Rupley
+	Date Modified: 4/18/2012
+*/
+function fixHL7NodeOrder(node) {
+	// Create output node
+	var newNode = new XML();
+	// In case the node is an XMLList of multiple siblings, loop through each sibling
+	for each (sibling in node) {
+		// Create new sibling node
+		var newSibling = new XML(&apos;&lt;&apos;+sibling.name().toString()+&apos;/&gt;&apos;);
+		// Iterate through each child node
+		for each (child in sibling.children())
+			// If the child has its own children, then recursively fix the node order of the child
+			if (child.hasComplexContent())
+				newSibling.appendChild(fixHL7NodeOrder(child));
+			// If the child doesn&apos;t have its own children, then just add the child to the new sibling node
+			else
+				newSibling.appendChild(child);
+		// After recursively fixing all of the child nodes, now we&apos;ll fix the current node
+		newNode += sortHL7Node(newSibling);
+	}
+	// Return the fixed node
+	return newNode;
+}
+
+// Helper function for fixHL7NodeOrder
+function sortHL7Node(node) {
+	// If the node has no children, then there&apos;s nothing to sort
+	if (node.hasSimpleContent())
+		return node;
+	// Create new output node
+	var newNode = new XML(&apos;&lt;&apos;+node.name().toString()+&apos;/&gt;&apos;);
+	// Iterate through each child in the node
+	for each (child in node.children()) {
+		// If the child has a QName, then we can sort on it
+		if (child.name()) {
+			// Get the current &quot;index&quot; of the child. Id est, if the QName is PID.3.1, then the index is 1
+			curChildIndex = parseInt(child.name().toString().substring(child.name().toString().lastIndexOf(&apos;.&apos;)+1),10);
+			// Boolean placeholder
+			var inserted = false;
+			// Iterate through each child currently in the NEW node
+			for (var i = 0; i &lt;= newNode.children().length()-1; i++) {
+				// Get the index of the child of the new node
+				loopChildIndex = parseInt(newNode.child(i).name().toString().substring(newNode.child(i).name().toString().lastIndexOf(&apos;.&apos;)+1),10);
+				// If the child we want to insert has a lower index then the current child of the new node, then we&apos;re going to insert the child 
+				// right before the current newNode child
+				if (curChildIndex &lt; loopChildIndex) {
+					// Insert the child
+					newNode.insertChildBefore(newNode.children()[i],child);
+					// Set our flag, indicating that an insertion was made
+					inserted = true;
+					// No need to continue iteration
+					break;
+				}
+			}
+			// If no insertion was made, then the index of the child we want to insert is greater than or equal to all of the
+			// indices of the children that have already been inserted in newNode. So, we&apos;ll just append the child to the end.
+			if (!inserted)
+				newNode.appendChild(child);
+		}
+	}
+	// Return the sorted HL7 node
+	return newNode;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>711f9e92-9872-4718-83aa-f8e62e3885b2</id>
+          <name>Get Base64 encoded string</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077840</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Encodes given string into a Base64 string.
+
+	@param {String} strData - String to be encoded
+	@return {String} return Base64 encoded string
+*/
+function getBase64Encoded(strData) {
+	
+	try {
+		
+		if (null == strData) strData = &apos;&apos;;
+		var byteData = new Packages.java.lang.String(strData).getBytes();
+		return FileUtil.encode(byteData).replaceAll(&apos;\r\n|\r|\n&apos;, &apos;&apos;);
+
+	} catch(err) {
+		logger.error(err);
+		return &quot;&quot;;
+	}
+}
+</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>872dae30-3381-458c-a4e5-4f412e21b1fa</id>
+          <name>Get HL7v2 Code Description</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1490476779449</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Retrieve code description for a given HL7v2 table (to be used for ORC, OBR and OBX segments)
+
+	@param {String} table - HL7v2 Table code as per specification
+	@param {String] value - value to convert
+	@return {String} return code description
+*/
+function getHL7v2CodeDescription(table, value) {
+
+	switch(table) {
+		
+		// Table 0038 - Order Status
+		case &quot;0038&quot;:
+			if (&quot;CM&quot; === value.toString()) return &quot;Order complete&quot;
+			else if (&quot;IP&quot; === value.toString()) return &quot;Order incomplete, or contains pending items&quot;
+			else if (&quot;CA&quot; === value.toString()) return &quot;Order was canceled&quot;
+			else if (&quot;DC&quot; === value.toString()) return &quot;Order was discontinued&quot;
+			else if (&quot;ER&quot; === value.toString()) return &quot;Error, order not found&quot;
+			else if (&quot;HD&quot; === value.toString()) return &quot;Order is on hold&quot;
+			else if (&quot;RP&quot; === value.toString()) return &quot;Order has been replaced&quot;
+			else if (&quot;SC&quot; === value.toString()) return &quot;In process, scheduled&quot;
+			else if (&quot;&quot; === value.toString()) return &quot;&quot;
+			else return &quot;&quot;;
+			break;
+
+		// Table 0123 - Result Status
+		case &quot;0123&quot;:
+			if (&quot;F&quot; === value.toString()) return &quot;Final results&quot;
+			else if (&quot;A&quot; === value.toString()) return &quot;Partial results&quot;
+			else if (&quot;C&quot; === value.toString()) return &quot;Correction to results&quot;
+			else if (&quot;I&quot; === value.toString()) return &quot;No results available. The specimen was received, but the procedure is incomplete.&quot;
+			else if (&quot;O&quot; === value.toString()) return &quot;Specimen not yet received&quot;
+			else if (&quot;P&quot; === value.toString()) return &quot;Preliminary results&quot;
+			else if (&quot;R&quot; === value.toString()) return &quot;Results stored&quot;
+			else if (&quot;S&quot; === value.toString()) return &quot;No results available. The procedure is scheduled, but has not been performed.&quot;
+			else if (&quot;X&quot; === value.toString()) return &quot;No results available. The order was canceled.&quot;
+			else return &quot;&quot;;		
+			break;
+
+		// Table 0085 - Observation Result Status
+		case &quot;0085&quot;:
+			if (&quot;F&quot; === value.toString()) return &quot;Final results; can only be changed with a corrected result.&quot;
+			else if (&quot;D&quot; === value.toString()) return &quot;Deletes the OBX record&quot;
+			else if (&quot;I&quot; === value.toString()) return &quot;Specimen in lab; results pending.&quot;
+			else if (&quot;N&quot; === value.toString()) return &quot;Not asked; used to affirmatively document that the observation identified in the OBX was not sought when the universal service ID in OBR.04 implies that it would be sought.&quot;
+			else if (&quot;O&quot; === value.toString()) return &quot;Order detail description only (no result)&quot;
+			else if (&quot;P&quot; === value.toString()) return &quot;Preliminary results&quot;
+			else if (&quot;R&quot; === value.toString()) return &quot;Results entered but not verified&quot;
+			else if (&quot;X&quot; === value.toString()) return &quot;Results cannot be obtained for this observation&quot;
+			else if (&quot;U&quot; === value.toString()) return &quot;Results status change to final without retransmitting results already sent as preliminary. For example, radiology changes status from preliminary to final.&quot;
+			else if (&quot;W&quot; === value.toString()) return &quot;Post original as wrong. For example, transmitted for wrong patient.&quot;
+			else return &quot;&quot;;
+			break;
+	}
+
+	return &quot;&quot;;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>53e03352-fda6-455a-bc6a-54f1b3287838</id>
+          <name>Get NTE segment</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077721</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Builds NTE segment with the comment entry from a single /text/div/p resource element
+	Expected comment entry object is {&quot;class&quot;:&quot;&quot;,&quot;content&quot;:&quot;&quot;}
+
+	// TODO: may require a flag to NOT restrict comment line longer than 60 chars as required for the Order message
+
+	@param {String} entry - JSON object with comment entries
+	@param {String} count - total NTE segment count i.e., NTE.1 [Set ID]	
+	@return {String} return NTE segment string in XML format
+*/
+function getNTESegment(entry, count) {
+
+	if (entry != undefined) {
+
+		var nte = &lt;NTE&gt;
+					&lt;NTE.1&gt;
+						&lt;NTE.1.1&gt;&lt;/NTE.1.1&gt;
+					&lt;/NTE.1&gt;
+					&lt;NTE.2&gt;
+						&lt;NTE.2.1&gt;&lt;/NTE.2.1&gt;
+					&lt;/NTE.2&gt;
+					&lt;NTE.3&gt;
+						&lt;NTE.3.1&gt;&lt;/NTE.3.1&gt;
+					&lt;/NTE.3&gt;
+				&lt;/NTE&gt;;
+
+		// NTE.1 [Set ID]		
+		nte[&apos;NTE.1&apos;][&apos;NTE.1.1&apos;] = count;
+			
+		// NTE.2 [Source of Comment]
+		nte[&apos;NTE.2&apos;][&apos;NTE.2.1&apos;] = entry.class.toString();
+
+		// NTE.3 [Comment]
+		// Comment shall be no longer than 60 characters for the OML_O21 Submit Order message
+		if (entry.content.toString().length &gt; 60)
+			entry.content = entry.content.toString().substring(0,60);
+			
+		nte[&apos;NTE.3&apos;][&apos;NTE.3.1&apos;] = entry.content.toString();
+
+		return nte.toString();
+		
+	} else 
+		return &quot;&quot;;
+		
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>0f2c8346-d098-49b3-8e97-184eef9fc7b4</id>
+          <name>HTTP Response Code indications</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077971</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Add the HTTP response status code description to the HTTP code
+
+	@param {Integer} code - HTTP response status code
+	@return {String} return HTTP response status code and its description
+*/
+function getHttpCodeDescription(code) {
+
+	var text;
+	
+	switch(code) {
+		case 200:
+			text = &quot;OK&quot;;
+			break;
+		case 400:
+			text = &quot;The request was not properly constructed&quot;;
+			break;
+		case 401:
+			text = &quot;The user credentials submitted are not authorized&quot;;
+			break;
+		case 403:
+			text = &quot;The user name submitted does not have permission to access the Results RESTful web service&quot;;
+			break;
+		case 404:
+			text = &quot;The user credentials submitted are not authorized&quot;;
+			break;
+		case 500:
+			text = &quot;An internal server error occurred&quot;;
+			break;	        
+		default:
+			text = &quot;This response status code is undefined in the DEX spec&quot;;
+	}
+
+	return (code + &quot; - &quot; + text);
+	
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>5032a64e-7da6-4885-83e2-348e5ab75600</id>
+          <name>Parse person&apos;s name node</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077624</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Process Person.name element with zero or multiple given names with possible DEX name length limitation
+
+	@param {Object} item - JSON representation of /resource/Person/name node
+	@param {Boolean} lengthLimit - If person&apos;s name limitation applies according to DEX spec (true - apply, false - does not)	
+	@return {Object} return name parts object with family and given names
+*/
+function processPersonName(item, lengthLimit) {
+
+	var nameParts = {family: &quot;&quot;, given1: &quot;&quot;, given2: &quot;&quot;};
+
+	if (item.family != null &amp;&amp; item.family != undefined) {
+		
+		// Last name of the person
+		var family = item.family.value.toString();
+		
+		// If Quest&apos;s length limit applies
+		if (lengthLimit) {
+			// The last name can be a maximum of 20 characters. (p.201)
+			if (family.length &gt; 20) 
+				family = family.substring(0, 20);
+			// The entire patient name cannot exceed 24 characters (p.201)
+			var limit = 24 - family.length;
+		}
+		nameParts.family = family;
+	}
+
+	if (item.given == null || item.given == undefined) return nameParts;
+		
+	if (item.given.length != undefined) {
+		
+		var count = 0;
+		item.given.forEach(function(entry){
+			var given = entry.value.toString();
+			
+			if (given.length &gt; 0) {					
+				if (0 == count) {
+					// The first name is limited to the difference between the number of characters in the last name and 24.				
+					if (given.length &gt; limit &amp;&amp; lengthLimit) given = given.substring(0, limit);
+					nameParts.given1 = given;
+					limit -= given.length;
+				} else {
+					// if the limit is exceeded, a minimum of the first character of the middle initial is always returned in the result message.
+					if (given.length &gt; limit &amp;&amp; lengthLimit) given = given.substring(0, 1);
+					nameParts.given2 = given;
+				}
+			}
+			count++;
+		});			
+	} else {
+		var given = item.given.value.toString();
+		if (given.length &gt; limit &amp;&amp; lengthLimit) given = given.substring(0, limit);
+		nameParts.given1 = given;
+	}
+
+	return nameParts;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>08f30179-5465-4895-a2d3-4933f182035e</id>
+          <name>Remove illegal XML chanracters</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609078114</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Strip non valid XML characters from a given text string.
+	CAUTION: This is not a full-fledged function for XML input sanitization 
+
+	@param {String} text - text string that may contain illegal XML characters
+	@return {String} return text string with illegal XML characters replaced
+*/
+function stripNonValidXMLChars(text) {
+
+	if (text == null || text == undefined || text.toString().length == 0) return &quot;&quot;;
+
+	//text = comment.replace(/&amp;/g,&quot;&amp;amp;&quot;);// ampersand - (SN) temporary disabled
+	text = text.replace(/&lt;/g,&quot;&amp;lt;&quot;); // less than
+	text = text.replace(/&gt;/g,&quot;&amp;gt;&quot;); // greater than
+	text = text.replace(/&apos;/g,&quot;&amp;apos;&quot;); // single quotes
+	text = text.replace(/&quot;/g,&quot;&amp;apos;&quot;); // double quotes
+
+	// (SN) Issue #6, #11: unexpected &quot;%&quot; in field
+	text = text.replace(/\|%/g, &quot;|&quot;);
+
+	return text;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>15559e88-2f64-415a-8544-9cbbc2742c79</id>
+          <name>Verifies if Lab test is STD</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1489609077902</time>
+            <timezone>UTC</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Verifies if the submitted Lab test code is in the list of STD lab tests
+
+	@param {String} code - Lab test code
+	@return {String} return true if Lab test code in the list of STD codes, false otherwise
+*/
+function isSTDLabTest(code) {
+
+	// Check for LOINC codes
+	switch(code) {
+		// 86631, 86632 Chlamydia trachomatis Antibodies 
+		case &quot;1833274&quot;:
+		case &quot;1832970&quot;:
+		case &quot;1833579&quot;:
+		case &quot;44079-2&quot;:
+		// 87591 Neisseria gonorrhoeae
+		case &quot;43305-2&quot;:
+		// 86704	Hepatitis A
+		case &quot;13951-9&quot;:
+		// 87340	Hepatitis B
+		case &quot;1203841&quot;:
+		case &quot;2193342&quot;:
+		case &quot;10900-9&quot;:
+		case &quot;13952-7&quot;:
+		// 81001	Hepatitis C (Urinalysis, Complete)
+		case &quot;13955-0&quot;:
+		case &quot;48159-8&quot;:
+		// 86695	Herpes Simplex Virus 1 (IgG)
+		case &quot;1207706&quot;:
+		// 86696	Herpes Simplex Virus 2 (IgG)
+		case &quot;1208621&quot;:
+		// 86592	VDRL, Serum (Syphilis)
+		case &quot;1239118&quot;:
+		// 86701	HIV-1 Antibody
+		case &quot;29893-5&quot;:
+		// 86702	HIV-2 Antibody
+		case &quot;30361-0&quot;:
+		// 87389	HIV-1/2 Antig. and Antib.,4th Gen
+		case &quot;56888-1&quot;:
+			return true;
+			break;
+	}
+
+	return false;
+	
+}</code>
+        </codeTemplate>
+      </codeTemplates>
+    </codeTemplateLibrary>
+  </codeTemplateLibraries>
+</channel>
